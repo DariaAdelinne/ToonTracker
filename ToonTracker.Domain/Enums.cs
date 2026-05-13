@@ -1,6 +1,6 @@
 /**************************************************************************
  *                                                                        *
- *  File:        Header.cs                                                *
+ *  File:        Enums.cs                                                *
  *  Copyright:   (c) 2026, Echipa ToonTracker                             *
  *  Description: Enumerari folosite in domeniul aplicatiei.               *
  *                                                                        *
