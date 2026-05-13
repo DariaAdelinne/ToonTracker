@@ -17,28 +17,45 @@ using ToonTracker.Domain;
 
 namespace ToonTracker.UI;
 
+/// <summary>
+/// Formular responsabil pentru afișarea statisticilor vizuale si textuale 
+/// referitoare la colectia de desene animate a utilizatorului.
+/// </summary>
 public class StatisticsForm : Form
 {
+    // Lista locală de show-uri primită pentru procesare
     private readonly List<AnimatedShow> _shows;
+    // Tema actuală a aplicației pentru consistență vizuală
     private readonly AppTheme _currentTheme;
 
+    /// <summary>
+    /// Initializează o nouă instanta a clasei StatisticsForm.
+    /// </summary>
+    /// <param name="shows">Colectia de desene animate de analizat.</param>
+    /// <param name="currentTheme">Tema vizuală ce trebuie aplicata interfetei.</param>
     public StatisticsForm(IEnumerable<AnimatedShow> shows, AppTheme currentTheme)
     {
         _shows = shows.ToList();
         _currentTheme = currentTheme;
 
+        // Configurare proprietăți de bază ale ferestrei
         Text = "Statistici ToonTracker";
         Width = 950;
         Height = 650;
         MinimumSize = new Size(850, 550);
         StartPosition = FormStartPosition.CenterParent;
 
+        // Construirea și stilizarea interfeței
         BuildUi();
         ApplyTheme();
     }
 
+    /// <summary>
+    /// Construieste ierarhia de controale UI a formularului.
+    /// </summary>
     private void BuildUi()
     {
+        // Layout principal de tip tabel
         var root = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
@@ -47,12 +64,14 @@ public class StatisticsForm : Form
             Padding = new Padding(16)
         };
 
+        // Definire inaltimi rânduri: Header, Content (Charts), Footer (Summary)
         root.RowStyles.Add(new RowStyle(SizeType.Absolute, 78));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
         Controls.Add(root);
 
+        // Panoul de titlu
         var titlePanel = new Panel
         {
             Dock = DockStyle.Fill,
@@ -71,6 +90,7 @@ public class StatisticsForm : Form
         titlePanel.Controls.Add(title);
         root.Controls.Add(titlePanel, 0, 0);
 
+        // Verificare daca exista date de afisat
         if (_shows.Count == 0)
         {
             var emptyLabel = new Label
@@ -85,12 +105,14 @@ public class StatisticsForm : Form
             return;
         }
 
+        // Control pentru filele cu grafice
         var tabs = new TabControl
         {
             Dock = DockStyle.Fill,
             Font = new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold)
         };
 
+        // Adaugare pagini pentru fiecare categorie de statistici
         tabs.TabPages.Add(CreateChartTab("Genuri", BuildGenreData(), "Numar de titluri pe gen"));
         tabs.TabPages.Add(CreateChartTab("Studiouri", BuildStudioData(), "Numar de titluri pe studio"));
         tabs.TabPages.Add(CreateChartTab("Rating", BuildRatingData(), "Numar de titluri pe rating"));
@@ -98,6 +120,7 @@ public class StatisticsForm : Form
 
         root.Controls.Add(tabs, 0, 1);
 
+        // Panoul de sumar
         var summaryPanel = new Panel
         {
             Dock = DockStyle.Fill,
@@ -118,6 +141,9 @@ public class StatisticsForm : Form
         root.Controls.Add(summaryPanel, 0, 2);
     }
 
+    /// <summary>
+    /// Creează o pagina de tab ce conține un grafic tip bara.
+    /// </summary>
     private TabPage CreateChartTab(string tabTitle, Dictionary<string, int> data, string chartTitle)
     {
         var tab = new TabPage(tabTitle);
@@ -132,6 +158,9 @@ public class StatisticsForm : Form
         return tab;
     }
 
+    /// <summary>
+    /// Grupeaza datele dupa genul desenelor animate.
+    /// </summary>
     private Dictionary<string, int> BuildGenreData()
     {
         return _shows
@@ -142,6 +171,9 @@ public class StatisticsForm : Form
             .ToDictionary(g => g.Key, g => g.Count());
     }
 
+    /// <summary>
+    /// Grupeaza datele dupa studioul de producție.
+    /// </summary>
     private Dictionary<string, int> BuildStudioData()
     {
         return _shows
@@ -152,6 +184,9 @@ public class StatisticsForm : Form
             .ToDictionary(g => g.Key, g => g.Count());
     }
 
+    /// <summary>
+    /// Grupeaza datele dupa rating-ul acordat.
+    /// </summary>
     private Dictionary<string, int> BuildRatingData()
     {
         return _shows
@@ -161,6 +196,9 @@ public class StatisticsForm : Form
             .ToDictionary(g => g.Key, g => g.Count());
     }
 
+    /// <summary>
+    /// Grupeaza datele dua statusul vizionarii
+    /// </summary>
     private Dictionary<string, int> BuildStatusData()
     {
         return _shows
@@ -170,8 +208,12 @@ public class StatisticsForm : Form
             .ToDictionary(g => g.Key, g => g.Count());
     }
 
+    /// <summary>
+    /// Calculeaza si formateaza textul de sumar pentru partea de jos a ferestrei.
+    /// </summary>
     private string BuildSummaryText()
     {
+        // Calcul gen cu cele mai multe episoade vizionate
         var mostWatchedGenre = _shows
             .Where(s => s.WatchedEpisodes > 0 && !string.IsNullOrWhiteSpace(s.Genre))
             .GroupBy(s => s.Genre)
@@ -183,6 +225,7 @@ public class StatisticsForm : Form
             .OrderByDescending(g => g.WatchedEpisodes)
             .FirstOrDefault();
 
+        // Calcul studio cu cele mai multe titluri în colectie
         var mostUsedStudio = _shows
             .Where(s => !string.IsNullOrWhiteSpace(s.Studio))
             .GroupBy(s => s.Studio)
@@ -213,6 +256,9 @@ public class StatisticsForm : Form
             $"{studioText}";
     }
 
+    /// <summary>
+    /// Aplica culorile temei selectate asupra tuturor controalelor din formular.
+    /// </summary>
     private void ApplyTheme()
     {
         Color background;
@@ -259,6 +305,7 @@ public class StatisticsForm : Form
         BackColor = background;
         ForeColor = textPrimary;
 
+        // Iterare prin toate controalele pentru aplicarea stilului
         foreach (Control control in GetAllControls(this))
         {
             control.ForeColor = textPrimary;
@@ -293,6 +340,7 @@ public class StatisticsForm : Form
             }
         }
 
+        // Tratare speciala pentru header-ul cu titlu
         foreach (Panel panel in GetAllControls(this).OfType<Panel>())
         {
             if (panel.Controls.OfType<Label>().Any(l => l.Text == "Statistici ToonTracker"))
@@ -308,6 +356,9 @@ public class StatisticsForm : Form
         }
     }
 
+    /// <summary>
+    /// Metodă recursiva pentru a obtine toate controalele copil, indiferent de nivelul de imbricare.
+    /// </summary>
     private IEnumerable<Control> GetAllControls(Control parent)
     {
         foreach (Control control in parent.Controls)
@@ -321,11 +372,15 @@ public class StatisticsForm : Form
         }
     }
 
+    /// <summary>
+    /// Control personalizat pentru desenarea unui grafic cu bare orizontale.
+    /// </summary>
     private class BarChartPanel : Panel
     {
         private readonly Dictionary<string, int> _data;
         private readonly string _title;
 
+        // Setări de aspect implicite
         private AppTheme _currentTheme = AppTheme.CozyPink;
         private Color _surface = Color.White;
         private Color _textPrimary = Color.Black;
@@ -333,6 +388,11 @@ public class StatisticsForm : Form
         private Color _border = Color.LightGray;
         private Color _barColor = Color.FromArgb(232, 122, 170);
 
+        /// <summary>
+        /// Initializează panoul graficului.
+        /// </summary>
+        /// <param name="data">Datele sub forma de perechi Eticheta-Valoare.</param>
+        /// <param name="title">Titlul afisat deasupra graficului.</param>
         public BarChartPanel(Dictionary<string, int> data, string title)
         {
             _data = data;
@@ -344,6 +404,9 @@ public class StatisticsForm : Form
             Padding = new Padding(10);
         }
 
+        /// <summary>
+        /// Actualizeaza paleta de culori a graficului.
+        /// </summary>
         public void SetTheme(
         AppTheme currentTheme,
         Color surface,
@@ -357,6 +420,7 @@ public class StatisticsForm : Form
             _textSecondary = textSecondary;
             _border = border;
 
+            // Selectare culoare bară în functie de tema
             _barColor = currentTheme switch
             {
                 AppTheme.BerryNight => Color.FromArgb(207, 117, 161),
@@ -368,6 +432,9 @@ public class StatisticsForm : Form
             Invalidate();
         }
 
+        /// <summary>
+        /// Suprascrie metoda de desenare pentru a randa manual graficul.
+        /// </summary>
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -376,6 +443,7 @@ public class StatisticsForm : Form
             graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             graphics.Clear(_surface);
 
+            // Resurse GDI+ pentru desenare
             using var titleFont = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
             using var labelFont = new Font(FontFamily.GenericSansSerif, 9);
             using var valueFont = new Font(FontFamily.GenericSansSerif, 9, FontStyle.Bold);
@@ -385,6 +453,7 @@ public class StatisticsForm : Form
             using var borderPen = new Pen(_border, 1);
             using var barBrush = new SolidBrush(_barColor);
 
+            // Desenare titlu grafic
             graphics.DrawString(_title, titleFont, textBrush, 20, 15);
 
             if (_data.Count == 0)
@@ -398,6 +467,7 @@ public class StatisticsForm : Form
                 return;
             }
 
+            // Parametri geometrie grafic
             var chartLeft = 190;
             var chartTop = 60;
             var barHeight = 28;
@@ -407,6 +477,7 @@ public class StatisticsForm : Form
 
             var y = chartTop;
 
+            // Desenarea barelor si etichetelor
             foreach (var item in _data)
             {
                 var label = TrimLabel(item.Key, 24);
@@ -428,6 +499,9 @@ public class StatisticsForm : Form
             }
         }
 
+        /// <summary>
+        /// Scurteazaa un text daca depaseste lungimea maxima, adaugând elipse.
+        /// </summary>
         private static string TrimLabel(string text, int maxLength)
         {
             if (string.IsNullOrWhiteSpace(text))

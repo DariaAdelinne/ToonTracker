@@ -18,6 +18,9 @@ using ToonTracker.Services;
 
 namespace ToonTracker.UI;
 
+/// <summary>
+/// Clasa reprezentand formularul de dialog pentru crearea sau modificarea unui obiect de tip AnimatedShow.
+/// </summary>
 public class ShowForm : Form
 {
     private readonly TextBox _title = new();
@@ -34,8 +37,15 @@ public class ShowForm : Form
     private readonly List<AgeRating> _ratingValues = Enum.GetValues(typeof(AgeRating)).Cast<AgeRating>().ToList();
     private readonly List<WatchStatus> _statusValues = Enum.GetValues(typeof(WatchStatus)).Cast<WatchStatus>().ToList();
 
+    /// <summary>
+    /// Obiectul AnimatedShow care este creat sau editat in cadrul formularului.
+    /// </summary>
     public AnimatedShow Show { get; private set; }
 
+    /// <summary>
+    /// Constructor pentru editarea unui serial existent.
+    /// </summary>
+    /// <param name="show">Obiectul AnimatedShow care urmeaza sa fie editat.</param>
     public ShowForm(AnimatedShow? show = null)
     {
         Show = show == null ? new AnimatedShow() : new AnimatedShow
@@ -66,6 +76,9 @@ public class ShowForm : Form
         FillFields();
     }
 
+    /// <summary>
+    /// Construieste interfata grafica a formularului, adaugand controalele si setand layout-ul.
+    /// </summary>
     private void BuildUi()
     {
         _rating.Items.Clear();
@@ -100,6 +113,7 @@ public class ShowForm : Form
         table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
         table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
+        // Adaugare campuri
         AddRow(table, "Titlu *", _title);
         AddRow(table, "Studio", _studio);
         AddRow(table, "Gen *", _genre);
@@ -129,6 +143,12 @@ public class ShowForm : Form
         CancelButton = cancel;
     }
 
+    /// <summary>
+    /// Metoda utilitara pentru a adauga o eticheta si un control pe un rand din TableLayoutPanel.
+    /// </summary>
+    /// <param name="table">Panoul in care se adauga elementele.</param>
+    /// <param name="label">Textul etichetei.</param>
+    /// <param name="input">Controlul care trebuie adaugat.</param>
     private static void AddRow(TableLayoutPanel table, string label, Control input)
     {
         var row = table.RowCount++;
@@ -145,6 +165,9 @@ public class ShowForm : Form
         table.Controls.Add(input, 1, row);
     }
 
+    /// <summary>
+    /// Populeaza campurile formularului cu datele din obiectul Show (folosit la editare).
+    /// </summary>
     private void FillFields()
     {
         _isLoadingFields = true;
@@ -189,6 +212,9 @@ public class ShowForm : Form
         SyncStatusAndScore();
     }
 
+    /// <summary>
+    /// Sincronizeaza starea (statusul) serialului si scorul in functie de progresul vizionarii.
+    /// </summary>
     private void SyncStatusAndScore()
     {
         if (_isLoadingFields)
@@ -242,6 +268,11 @@ public class ShowForm : Form
         }
     }
 
+    /// <summary>
+    /// Salveaza datele in obiect si valideaza.
+    /// </summary>
+    /// <param name="sender">Sursa.</param>
+    /// <param name="e">Argumente.</param>
     private void Save_Click(object? sender, EventArgs e)
     {
         try
