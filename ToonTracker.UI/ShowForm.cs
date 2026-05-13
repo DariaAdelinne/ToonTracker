@@ -2,7 +2,8 @@
  *                                                                        *
  *  File:        ShowForm.cs                                              *
  *  Copyright:   (c) 2026, Echipa ToonTracker                             *
- *  Description: Dialog pentru adaugarea si editarea unui desen/serial animat.*
+ *  Description: Dialog pentru adaugarea si editarea unui                 *
+ *  desen/serial animat.                                                  *
  *                                                                        *
  *  This program is free software; you can redistribute it and/or modify  *
  *  it under the terms of the GNU General Public License as published by  *

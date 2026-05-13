@@ -20,12 +20,20 @@ using ToonTracker.Services;
 using System.Drawing.Drawing2D;
 
 namespace ToonTracker.UI;
+
+/// <summary>
+/// Enumerare pentru temele vizuale disponibile in aplicatie.
+/// </summary>
 public enum AppTheme
 {
     CozyPink,
     BerryNight,
     OceanBlue
 }
+
+/// <summary>
+/// Clasa principala a interfetei grafice pentru gestionarea colectiei de seriale animate.
+/// </summary>
 public class MainForm : Form
 {
     private readonly ShowService _showService;
@@ -51,6 +59,9 @@ public class MainForm : Form
     private readonly List<Label> _mainLabels = new();
     private readonly List<GroupBox> _mainGroupBoxes = new();
 
+    /// <summary>
+    /// Constructor implicit - initializeaza setarile de baza ale ferestrei.
+    /// </summary>
     public MainForm()
     {
         _showService = null!;
@@ -61,6 +72,10 @@ public class MainForm : Form
         BuildUi();
     }
 
+    /// <summary>
+    /// Constructor principal care injecteaza serviciul de date.
+    /// </summary>
+    /// <param name="showService">Serviciul care gestioneaza logica serialelor.</param>
     public MainForm(ShowService showService)
     {
         _showService = showService;
@@ -75,6 +90,9 @@ public class MainForm : Form
         LoadData();
     }
 
+    /// <summary>
+    /// Construieste interfata utilizator, configurand layout-ul si controalele.
+    /// </summary>
     private void BuildUi()
     {
         Controls.Clear();
@@ -82,6 +100,7 @@ public class MainForm : Form
         _mainLabels.Clear();
         _mainGroupBoxes.Clear();
 
+        // Layout principal pe grila 2 coloane x 5 randuri
         var root = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
@@ -481,6 +500,11 @@ public class MainForm : Form
         ApplyTheme();
     }
 
+    /// <summary>
+    /// Creeaza un GroupBox stilizat pentru sectiunile interfetei.
+    /// </summary>
+    /// <param name="text">Textul care va fi afisat ca titlu al grupului.</param>
+    /// <returns>Obiectul GroupBox configurat.</returns>
     private GroupBox CreateSectionGroup(string text)
     {
         return new GroupBox
@@ -493,6 +517,12 @@ public class MainForm : Form
         };
     }
 
+    /// <summary>
+    /// Creeaza si stilizeaza un buton de control.
+    /// </summary>
+    /// <param name="text">Textul butonului.</param>
+    /// <param name="width">Latimea butonului (implicit 120).</param>
+    /// <returns>Obiectul Button creat.</returns>
     private Button CreateStyledButton(string text, int width = 120)
     {
         var button = new Button
@@ -514,6 +544,11 @@ public class MainForm : Form
         return button;
     }
 
+    /// <summary>
+    /// Creeaza un label de dimensiuni mici pentru etichetarea campurilor.
+    /// </summary>
+    /// <param name="text">Continutul text al etichetei.</param>
+    /// <returns>Obiectul Label creat.</returns>
     private Label CreateSmallLabel(string text)
     {
         return new Label
@@ -525,6 +560,10 @@ public class MainForm : Form
         };
     }
 
+    /// <summary>
+    /// Aplica un stil standard pentru TextBox.
+    /// </summary>
+    /// <param name="textBox">Controlul care trebuie stilizat.</param>
     private void StyleTextBox(TextBox textBox)
     {
         textBox.BorderStyle = BorderStyle.FixedSingle;
@@ -533,6 +572,10 @@ public class MainForm : Form
         textBox.Height = 30;
     }
 
+    /// <summary>
+    /// Aplica un stil standard pentru ComboBox.
+    /// </summary>
+    /// <param name="comboBox">Controlul care trebuie stilizat.</param>
     private void StyleComboBox(ComboBox comboBox)
     {
         comboBox.FlatStyle = FlatStyle.Flat;
@@ -541,6 +584,11 @@ public class MainForm : Form
         comboBox.Height = 30;
     }
 
+    /// <summary>
+    /// Modifica regiunea unui control pentru a-i oferi margini rotunjite.
+    /// </summary>
+    /// <param name="control">Controlul tinta.</param>
+    /// <param name="radius">Raza de rotunjire a colturilor.</param>
     private void ApplyRoundedCorners(Control control, int radius)
     {
         if (control.Width <= 0 || control.Height <= 0)
@@ -561,6 +609,12 @@ public class MainForm : Form
         control.Region = new Region(path);
     }
 
+    /// <summary>
+    /// Verifica daca un control este descendentul altui control.
+    /// </summary>
+    /// <param name="control">Controlul de verificat.</param>
+    /// <param name="potentialAncestor">Controlul stramos potential.</param>
+    /// <returns>True daca este descendent, false in caz contrar.</returns>
     private static bool IsDescendantOf(Control control, Control? potentialAncestor)
     {
         var current = control.Parent;
@@ -578,6 +632,11 @@ public class MainForm : Form
         return false;
     }
 
+    /// <summary>
+    /// Returneaza recursiv toate controalele continute de un parinte.
+    /// </summary>
+    /// <param name="parent">Controlul radacina.</param>
+    /// <returns>O colectie de controale descendente.</returns>
     private IEnumerable<Control> GetAllControls(Control parent)
     {
         foreach (Control control in parent.Controls)
@@ -591,6 +650,12 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Adauga o coloana noua in tabelul principal.
+    /// </summary>
+    /// <param name="propertyName">Numele proprietatii din model pentru legare (DataBinding).</param>
+    /// <param name="header">Titlul coloanei afisat utilizatorului.</param>
+    /// <param name="width">Latimea coloanei.</param>
     private void AddGridColumn(string propertyName, string header, int width)
     {
         var column = new DataGridViewTextBoxColumn
@@ -615,6 +680,9 @@ public class MainForm : Form
         _grid.Columns.Add(column);
     }
 
+    /// <summary>
+    /// Populeaza aplicatia cu date demo daca nu exista nicio intrare.
+    /// </summary>
     private void SeedDemoDataIfEmpty()
     {
         if (_showService == null)
@@ -642,6 +710,10 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Incarca datele in BindingSource si actualizeaza interfata.
+    /// </summary>
+    /// <param name="source">Sursa de date optionala. Daca e null, preia tot din serviciu.</param>
     private void LoadData(IEnumerable<AnimatedShow>? source = null)
     {
         if (_showService == null)
@@ -668,6 +740,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Actualizeaza listele derulante pentru filtre pe baza datelor curente.
+    /// </summary>
     private void RefreshFilters()
     {
         if (_showService == null)
@@ -700,16 +775,25 @@ public class MainForm : Form
         _statusFilter.SelectedIndexChanged += StatusFilterChanged;
     }
 
+    /// <summary>
+    /// Event handler pentru filtru de gen.
+    /// </summary>
     private void GenreFilterChanged(object? sender, EventArgs e)
     {
         ApplyFilters();
     }
 
+    /// <summary>
+    /// event handler pentru filtru de status.
+    /// </summary>
     private void StatusFilterChanged(object? sender, EventArgs e)
     {
         ApplyFilters();
     }
 
+    /// <summary>
+    /// Filtreaza si sorteaza lista de seriale afisata in tabel.
+    /// </summary>
     private void ApplyFilters()
     {
         if (_showService == null)
@@ -752,6 +836,11 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Sorteaza lista de seriale primita conform optiunii din ComboBox.
+    /// </summary>
+    /// <param name="shows">Lista care trebuie sortata.</param>
+    /// <returns>Lista sortata.</returns>
     private List<AnimatedShow> SortShows(List<AnimatedShow> shows)
     {
         var selectedSort = _sortComboBox.SelectedItem?.ToString() ?? "Alfabetic";
@@ -779,6 +868,10 @@ public class MainForm : Form
         };
     }
 
+    /// <summary>
+    /// Actualizeaza textul de statistici din subsolul ferestrei.
+    /// </summary>
+    /// <param name="shows">Lista de seriale pentru care se calculeaza statisticile.</param>
     private void UpdateStats(List<AnimatedShow> shows)
     {
         _statsLabel.Text =
@@ -789,6 +882,10 @@ public class MainForm : Form
             $"Gen preferat: {_statistics.FavoriteGenre(shows)}";
     }
 
+    /// <summary>
+    /// Obtine obiectul serial selectat curent in tabel.
+    /// </summary>
+    /// <returns>Obiectul AnimatedShow sau null daca nu exista selectie.</returns>
     private AnimatedShow? SelectedShow()
     {
         if (_grid.CurrentRow == null)
@@ -799,6 +896,9 @@ public class MainForm : Form
         return _grid.CurrentRow.DataBoundItem as AnimatedShow;
     }
 
+    /// <summary>
+    /// Lanseaza dialogul de adaugare a unui nou serial.
+    /// </summary>
     private void AddShow()
     {
         if (_showService == null)
@@ -827,6 +927,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Lanseaza dialogul de editare pentru serialul selectat.
+    /// </summary>
     private void EditSelected()
     {
         if (_showService == null)
@@ -867,6 +970,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Sterge serialul selectat dupa confirmarea utilizatorului.
+    /// </summary>
     private void DeleteSelected()
     {
         if (_showService == null)
@@ -910,6 +1016,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Incrementeaza numarul de episoade vazute pentru titlul selectat.
+    /// </summary>
     private void MarkWatched()
     {
         if (_showService == null)
@@ -945,6 +1054,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Genereaza recomandari automate pe baza serialelor marcate ca "Finished".
+    /// </summary>
     private void ShowRecommendations()
     {
         if (_showService == null)
@@ -997,6 +1109,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Deschide formularul de preferinte pentru a genera recomandari personalizate.
+    /// </summary>
     private void ShowCustomRecommendations()
     {
         if (_showService == null)
@@ -1037,6 +1152,11 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Afiseaza lista de recomandari primita in zona dedicata din interfata.
+    /// </summary>
+    /// <param name="recommendations">Lista de obiecte recomandate.</param>
+    /// <param name="title">Titlul sectiunii de recomandari.</param>
     private void DisplayRecommendations(List<AnimatedShow> recommendations, string title)
     {
         _lastRecommendations.Clear();
@@ -1079,6 +1199,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Curata picker-ul de recomandari si lista interna.
+    /// </summary>
     private void ClearRecommendationPicker()
     {
         _lastRecommendations.Clear();
@@ -1086,6 +1209,9 @@ public class MainForm : Form
         _recommendationPicker.Items.Clear();
     }
 
+    /// <summary>
+    /// Adauga titlul recomandat selectat in colectia personala cu statusul "Planned".
+    /// </summary>
     private void AddSelectedRecommendationToWishlist()
     {
         if (_showService == null)
@@ -1173,6 +1299,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Deschide fereastra complexa de statistici.
+    /// </summary>
     private void ShowStatistics()
     {
         if (_showService == null)
@@ -1197,6 +1326,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Exporta datele colectiei intr-un fisier extern ales de utilizator.
+    /// </summary>
     private void ExportReport()
     {
         if (_showService == null)
@@ -1258,6 +1390,11 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Construieste continutul unui raport tip text (uman lizibil).
+    /// </summary>
+    /// <param name="shows">Lista de seriale.</param>
+    /// <returns>Sirul de caractere reprezentand raportul.</returns>
     private string BuildTextReport(List<AnimatedShow> shows)
     {
         var builder = new StringBuilder();
@@ -1305,6 +1442,11 @@ public class MainForm : Form
         return builder.ToString();
     }
 
+    /// <summary>
+    /// Construieste continutul unui raport in format CSV.
+    /// </summary>
+    /// <param name="shows">Lista de seriale.</param>
+    /// <returns>Sirul de caractere formatat CSV.</returns>
     private string BuildCsvReport(List<AnimatedShow> shows)
     {
         var builder = new StringBuilder();
@@ -1330,6 +1472,11 @@ public class MainForm : Form
         return builder.ToString();
     }
 
+    /// <summary>
+    /// Formateaza un camp text pentru a fi valid intr-un fisier CSV.
+    /// </summary>
+    /// <param name="value">Valoarea de intrare.</param>
+    /// <returns>Valoarea procesata pentru CSV.</returns>
     private static string EscapeCsv(string? value)
     {
         value ??= string.Empty;
@@ -1343,6 +1490,11 @@ public class MainForm : Form
         return value;
     }
 
+    /// <summary>
+    /// Incarca date demo in serviciu, evitand duplicatele dupa titlu, 
+    /// apoi reimprospateaza lista si afiseaza un mesaj de confirmare. 
+    /// La eroare, afiseaza mesajul exceptiei.
+    /// </summary>
     private void LoadDemoData()
     {
         if (_showService == null)
@@ -1378,6 +1530,9 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Reseteaza toate filtrele de cautare la valorile implicite.
+    /// </summary>
     private void ResetFilters()
     {
         _searchBox.Clear();
@@ -1400,6 +1555,9 @@ public class MainForm : Form
         LoadData();
     }
 
+    /// <summary>
+    /// Deschide dialogul pentru schimbarea temei vizuale.
+    /// </summary>
     private void ChooseTheme()
     {
         using var themeForm = new Form
@@ -1524,6 +1682,9 @@ public class MainForm : Form
         themeForm.ShowDialog(this);
     }
 
+    /// <summary>
+    /// Aplica setarile de culori si fonturi pentru tema selectata asupra tuturor controalelor.
+    /// </summary>
     private void ApplyTheme()
     {
         Color background;
@@ -1836,6 +1997,10 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Selecteaza si focuseaza un serial in tabel pe baza ID-ului.
+    /// </summary>
+    /// <param name="id">ID-ul serialului.</param>
     private void SelectById(Guid id)
     {
         foreach (DataGridViewRow row in _grid.Rows)
@@ -1849,6 +2014,10 @@ public class MainForm : Form
         }
     }
 
+    /// <summary>
+    /// Creeaza o lista initiala de seriale pentru exemplificare.
+    /// </summary>
+    /// <returns>Lista de obiecte AnimatedShow.</returns>
     private static List<AnimatedShow> DemoShows() => new()
     {
         new AnimatedShow
