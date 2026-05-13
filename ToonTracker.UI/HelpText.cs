@@ -1,5 +1,17 @@
-// Author: Echipa ToonTracker
-// Functionalitate: Textul de ajutor integrat in aplicatie.
+/**************************************************************************
+ *                                                                        *
+ *  File:        HelpText.cs                                              *
+ *  Copyright:   (c) 2026, Echipa ToonTracker                             *
+ *  Description: Textul de ajutor integrat in aplicatie.                  *
+ *                                                                        *
+ *  This program is free software; you can redistribute it and/or modify  *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation. This program is distributed in the      *
+ *  hope that it will be useful, but WITHOUT ANY WARRANTY; without even   *
+ *  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   *
+ *  PURPOSE. See the GNU General Public License for more details.         *
+ *                                                                        *
+ **************************************************************************/
 namespace ToonTracker.UI;
 
 public static class HelpText

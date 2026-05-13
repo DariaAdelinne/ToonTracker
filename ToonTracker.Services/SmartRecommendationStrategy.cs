@@ -1,15 +1,41 @@
-﻿// Author: Echipa ToonTracker
-// Functionalitate: Strategie avansata de recomandare pe baza istoricului utilizatorului.
-// Analizeaza scorurile, genurile, studiourile si statusul desenelor deja vizionate.
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        SmartRecommendationStrategy.cs                           *
+ *  Copyright:   (c) 2026, Echipa ToonTracker                             *
+ *  Description: Strategie avansata de recomandare pe baza istoricului    *
+ *  utilizatorului. Analizeaza scorurile, genurile,                       *
+ *  studiourile si statusul desenelor deja vizionate.                     *
+ *                                                                        *
+ *  This program is free software; you can redistribute it and/or modify  *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation. This program is distributed in the      *
+ *  hope that it will be useful, but WITHOUT ANY WARRANTY; without even   *
+ *  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   *
+ *  PURPOSE. See the GNU General Public License for more details.         *
+ *                                                                        *
+ **************************************************************************/
+
 
 using ToonTracker.Domain;
 
 namespace ToonTracker.Services;
 
+/// <summary>
+/// Strategie de recomandare inteligenta bazata pe preferintele utilizatorului,
+/// istoricul de vizionare si catalogul intern de titluri disponibile
+/// </summary>
 public class SmartRecommendationStrategy : IRecommendationStrategy
 {
     public string Name => "Recomandare inteligenta pe baza preferintelor";
 
+    /// <summary>
+    /// Genereaza o lista de recomandari personalizate pe baza istoricului de vizionare si a profilului utilizatorului.
+    /// Daca nu exista istoric, returneaza cele mai populare titluri din catalog.
+    /// </summary>
+    /// <param name="shows">Lista serialelor deja existente in colectia utilizatorului</param>
+    /// <param name="profile">Profilul utilizatorului, folosit pentru rating maxim acceptat</param>
+    /// <param name="count">Numarul de recomandari de returnat</param>
+    /// <returns>Lista serialelor recomandate, ordonate dupa scorul de potrivire</returns>
     public IEnumerable<AnimatedShow> Recommend(IEnumerable<AnimatedShow> shows, UserProfile profile, int count = 5)
     {
         var userShows = shows.ToList();
@@ -45,6 +71,12 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
         return recommendations;
     }
 
+    /// <summary>
+    /// Construieste un dictionar de ponderi pentru genuri, bazat pe serialele utilizatorului.
+    /// Genurile serialelor apreciate sau finalizate primesc ponderi mai mari.
+    /// </summary>
+    /// <param name="userShows">Lista serialelor din colectia utilizatorului</param>
+    /// <returns>Dictionar gen cu pondere calculata</returns>
     private static Dictionary<string, double> BuildGenreWeights(List<AnimatedShow> userShows)
     {
         var weights = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
@@ -65,6 +97,12 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
         return weights;
     }
 
+    /// <summary>
+    /// Construieste un dictionar de ponderi pentru studiouri, bazat pe serialele utilizatorului.
+    /// Studiourile sunt ponderate cu 65% fata de genuri, avand influenta mai mica in scor.
+    /// </summary>
+    /// <param name="userShows">Lista serialelor din colectia utilizatorului</param>
+    /// <returns>Dictionar studio cu pondere calculata</returns>
     private static Dictionary<string, double> BuildStudioWeights(List<AnimatedShow> userShows)
     {
         var weights = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
@@ -85,6 +123,13 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
         return weights;
     }
 
+    /// <summary>
+    /// Calculeaza ponderea unui serial din colectia utilizatorului in functie de
+    /// scorul personal, progresul de vizionare si statusul curent.
+    /// Serialele abandonate contribuie negativ la pondere.
+    /// </summary>
+    /// <param name="show">Serialul pentru care se calculeaza ponderea</param>
+    /// <returns>Valoarea ponderata a serialului</returns>
     private static double CalculateUserShowWeight(AnimatedShow show)
     {
         var scoreWeight = show.PersonalScore / 10.0;
@@ -102,6 +147,13 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
         return scoreWeight * 2.0 + progressWeight + statusBonus;
     }
 
+    /// <summary>
+    /// Detecteaza rating-ul maxim preferat al utilizatorului pe baza serialelor apreciate.
+    /// Daca nu exista seriale apreciate, returneaza rating-ul maxim acceptat din profil.
+    /// </summary>
+    /// <param name="userShows">Lista serialelor din colectia utilizatorului</param>
+    /// <param name="profile">Profilul utilizatorului</param>
+    /// <returns>Rating-ul maxim detectat ca preferat</returns>
     private static AgeRating DetectPreferredMaxRating(List<AnimatedShow> userShows, UserProfile profile)
     {
         var likedShows = userShows
@@ -117,6 +169,17 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
             .First();
     }
 
+    /// <summary>
+    /// Calculeaza scorul de potrivire al unui candidat din catalog cu preferintele utilizatorului.
+    /// Ia in considerare genul, studioul, rating-ul, popularitatea si formatul serialului.
+    /// Genurile abandonate sunt penalizate.
+    /// </summary>
+    /// <param name="candidate">Titlul candidat din catalog</param>
+    /// <param name="genreWeights">Ponderile genurilor calculate din istoricul utilizatorului</param>
+    /// <param name="studioWeights">Ponderile studiourilor calculate din istoricul utilizatorului</param>
+    /// <param name="preferredMaxRating">Rating-ul maxim preferat detectat</param>
+    /// <param name="userShows">Lista serialelor din colectia utilizatorului</param>
+    /// <returns>Obiect CandidateScore cu scorul final si explicatia recomandata</returns>
     private static CandidateScore ScoreCandidate(
         CatalogItem candidate,
         Dictionary<string, double> genreWeights,
@@ -190,12 +253,25 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
         return new CandidateScore(candidate, score, string.Join(", ", reasons));
     }
 
+    /// <summary>
+    /// Converteste un scor intern (calculat prin ponderare) la scara 1-10.
+    /// </summary>
+    /// <param name="score">Scorul intern de convertit</param>
+    /// <returns>Scorul rotunjit pe scara 1-10</returns>
     private static int ConvertScoreToTenPointScale(double score)
     {
         var result = (int)Math.Round(Math.Clamp(score, 1.0, 10.0));
         return result;
     }
 
+    /// <summary>
+    /// Converteste un CatalogItem intr-un AnimatedShow recomandat,
+    /// cu scorul prezis si explicatia recomandata in campul Notes.
+    /// </summary>
+    /// <param name="item">Titlul din catalog</param>
+    /// <param name="predictedScore">Scorul prezis pe scara 1-10</param>
+    /// <param name="explanation">Explicatia recomandata generata</param>
+    /// <returns>Obiect AnimatedShow gata de afisat ca recomandare</returns>
     private static AnimatedShow ToAnimatedShow(CatalogItem item, int predictedScore, string explanation)
     {
         return new AnimatedShow
@@ -213,11 +289,20 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
         };
     }
 
+    /// <summary>
+    /// Normalizeaza un text pentru comparatie case-insensitive si fara spatii.
+    /// </summary>
+    /// <param name="text">Textul de normalizat</param>
+    /// <returns>Textul trimmed si lowercase</returns>
     private static string Normalize(string text)
     {
         return text.Trim().ToLowerInvariant();
     }
 
+    /// <summary>
+    /// Returneaza catalogul intern de titluri disponibile pentru recomandare.
+    /// </summary>
+    /// <returns>Lista completa de CatalogItem-uri disponibile</returns>
     private static List<CatalogItem> Catalog() => new()
     {
         new("Avatar: The Last Airbender", "Nickelodeon", "Aventura", 61, AgeRating.PG, 10),
@@ -331,6 +416,9 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
         new("Smiling Friends", "Adult Swim", "Comedie", 18, AgeRating.TVMA, 7)
     };
 
+    /// <summary>
+    /// Inregistrare interna reprezentand un titlu din catalogul de recomandari
+    /// </summary>
     private record CatalogItem(
         string Title,
         string Studio,
@@ -339,11 +427,27 @@ public class SmartRecommendationStrategy : IRecommendationStrategy
         AgeRating Rating,
         int Popularity);
 
+    /// <summary>
+    /// Inregistrare interna reprezentand un candidat evaluat cu scorul si explicatia sa
+    /// </summary>
     private record CandidateScore(
         CatalogItem Candidate,
         double Score,
         string Explanation);
 
+
+    /// <summary>
+    /// Genereaza recomandari pe baza preferintelor explicite ale utilizatorului,
+    /// fara a folosi istoricul de vizionare.
+    /// </summary>
+    /// <param name="existingShows">Serialele deja existente in colectia utilizatorului, pentru excludere</param>
+    /// <param name="preferredGenres">Lista genurilor preferate selectate de utilizator</param>
+    /// <param name="preferredStudios">Lista studiourilor preferate selectate de utilizator</param>
+    /// <param name="maximumAcceptedRating">Rating-ul maxim acceptat de utilizator</param>
+    /// <param name="preferShortSeries">Daca utilizatorul prefera seriale scurte (max 50 episoade)</param>
+    /// <param name="preferLongSeries">Daca utilizatorul prefera seriale lungi (min 80 episoade)</param>
+    /// <param name="count">Numarul de recomandari de returnat</param>
+    /// <returns>Lista serialelor recomandate, ordonate dupa scorul de potrivire</returns>
     public IEnumerable<AnimatedShow> RecommendByPreferences(
     IEnumerable<AnimatedShow> existingShows,
     List<string> preferredGenres,
