@@ -1,10 +1,26 @@
-﻿// Author: Echipa ToonTracker
-// Functionalitate: Formular pentru alegerea preferintelor folosite la recomandari custom.
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        RecommendationOptions.cs                                 *
+ *  Copyright:   (c) 2026, Echipa ToonTracker                             *
+ *  Description: Formular pentru alegerea preferintelor folosite la recomandari custom.*
+ *                                                                        *
+ *  This program is free software; you can redistribute it and/or modify  *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation. This program is distributed in the      *
+ *  hope that it will be useful, but WITHOUT ANY WARRANTY; without even   *
+ *  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   *
+ *  PURPOSE. See the GNU General Public License for more details.         *
+ *                                                                        *
+ **************************************************************************/
 
 using ToonTracker.Domain;
 
 namespace ToonTracker.UI;
 
+/// <summary>
+/// Fereastra de dialog care permite utilizatorului sa selecteze manual criterii 
+/// pentru generarea recomandarilor personalizate.
+/// </summary>
 public class RecommendationOptionsForm : Form
 {
     private readonly CheckedListBox _genreList = new();
@@ -13,12 +29,34 @@ public class RecommendationOptionsForm : Form
     private readonly CheckBox _shortSeriesCheckBox = new();
     private readonly CheckBox _longSeriesCheckBox = new();
 
+    /// <summary>
+    /// Lista de genuri selectate de utilizator.
+    /// </summary>
     public List<string> SelectedGenres { get; private set; } = new();
+
+    /// <summary>
+    /// Lista de studiouri de productie selectate de utilizator.
+    /// </summary>
     public List<string> SelectedStudios { get; private set; } = new();
+
+    /// <summary>
+    /// Clasificarea de varsta maxima pe care utilizatorul o accepta in recomandari.
+    /// </summary>
     public AgeRating MaximumAcceptedRating { get; private set; } = AgeRating.TV14;
+
+    /// <summary>
+    /// Indica daca utilizatorul prefera seriale cu un numar mic de episoade.
+    /// </summary>
     public bool PreferShortSeries { get; private set; }
+
+    /// <summary>
+    /// Indica daca utilizatorul prefera seriale de lunga durata.
+    /// </summary>
     public bool PreferLongSeries { get; private set; }
 
+    /// <summary>
+    /// Constructorul clasei. Initializeaza proprietatile vizuale ale ferestrei.
+    /// </summary>
     public RecommendationOptionsForm()
     {
         Text = "Preferinte recomandari";
@@ -30,6 +68,9 @@ public class RecommendationOptionsForm : Form
         BuildUi();
     }
 
+    /// <summary>
+    /// Construieste interfata grafica a formularului si configureaza layout-ul.
+    /// </summary>
     private void BuildUi()
     {
         var root = new TableLayoutPanel
@@ -50,6 +91,7 @@ public class RecommendationOptionsForm : Form
 
         Controls.Add(root);
 
+        // TITLU
         var title = new Label
         {
             Text = "Alege ce ai chef sa vezi",
@@ -62,6 +104,7 @@ public class RecommendationOptionsForm : Form
         root.Controls.Add(title, 0, 0);
         root.SetColumnSpan(title, 2);
 
+        // SECTIUNE GENURI
         var genreGroup = new GroupBox
         {
             Text = "Genuri preferate",
@@ -85,6 +128,7 @@ public class RecommendationOptionsForm : Form
         genreGroup.Controls.Add(_genreList);
         root.Controls.Add(genreGroup, 0, 1);
 
+        // SECTIUNE STUDIOURI
         var studioGroup = new GroupBox
         {
             Text = "Studiouri preferate",
@@ -109,6 +153,7 @@ public class RecommendationOptionsForm : Form
         studioGroup.Controls.Add(_studioList);
         root.Controls.Add(studioGroup, 1, 1);
 
+        // RATING
         var ratingLabel = new Label
         {
             Text = "Rating maxim acceptat:",
@@ -125,6 +170,7 @@ public class RecommendationOptionsForm : Form
 
         root.Controls.Add(_ratingComboBox, 1, 2);
 
+        // PREFERINTE DURATA
         _shortSeriesCheckBox.Text = "Prefer seriale scurte, usor de terminat";
         _shortSeriesCheckBox.AutoSize = true;
         _shortSeriesCheckBox.Padding = new Padding(0, 8, 0, 0);
@@ -136,6 +182,7 @@ public class RecommendationOptionsForm : Form
         root.Controls.Add(_shortSeriesCheckBox, 0, 3);
         root.Controls.Add(_longSeriesCheckBox, 1, 3);
 
+        // BUTOANE ACTIUNE
         var buttonsPanel = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill,
@@ -168,8 +215,12 @@ public class RecommendationOptionsForm : Form
         root.SetColumnSpan(buttonsPanel, 2);
     }
 
+    /// <summary>
+    /// Valideaza selectiile utilizatorului si salveaza datele in proprietati inainte de a inchide dialogul.
+    /// </summary>
     private void Confirm()
     {
+        // Preluarea elementelor bifate din liste
         SelectedGenres = _genreList.CheckedItems
             .Cast<string>()
             .ToList();
@@ -178,10 +229,12 @@ public class RecommendationOptionsForm : Form
             .Cast<string>()
             .ToList();
 
+        // Preluarea valorilor din controalele de tip selectie/bifa
         MaximumAcceptedRating = Enum.Parse<AgeRating>(_ratingComboBox.SelectedItem!.ToString()!);
         PreferShortSeries = _shortSeriesCheckBox.Checked;
         PreferLongSeries = _longSeriesCheckBox.Checked;
 
+        // Validare: utilizatorul trebuie sa aleaga macar un criteriu
         if (SelectedGenres.Count == 0 &&
             SelectedStudios.Count == 0 &&
             !PreferShortSeries &&
@@ -195,6 +248,7 @@ public class RecommendationOptionsForm : Form
             return;
         }
 
+        // Inchiderea ferestrei cu succes
         DialogResult = DialogResult.OK;
     }
 }
