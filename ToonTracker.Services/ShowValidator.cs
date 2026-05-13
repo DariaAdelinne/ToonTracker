@@ -1,13 +1,38 @@
-﻿// Author: Echipa ToonTracker
-// Functionalitate: Validarea datelor introduse pentru un desen sau serial animat.
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        ShowValidator.cs                                         *
+ *  Copyright:   (c) 2026, Echipa ToonTracker                             *
+ *  Description: Validarea datelor introduse                              *
+ *  pentru un desen sau serial animat.                                    *
+ *                                                                        *
+ *  This program is free software; you can redistribute it and/or modify  *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation. This program is distributed in the      *
+ *  hope that it will be useful, but WITHOUT ANY WARRANTY; without even   *
+ *  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   *
+ *  PURPOSE. See the GNU General Public License for more details.         *
+ *                                                                        *
+ **************************************************************************/
+
 
 using System.Text;
 using ToonTracker.Domain;
 
 namespace ToonTracker.Services;
 
+/// <summary>
+/// Clasa statica pentru validarea si normalizarea obiectelor de tip AnimatedShow
+/// </summary>
 public static class ShowValidator
 {
+    /// <summary>
+    /// Valideaza datele unui desen animat sau serial.
+    /// Verifica campurile obligatorii, limitele de lungime, consistenta dintre
+    /// episoade si status, si scorul personal.
+    /// La final, normalizeaza datele obiectului daca validarea trece.
+    /// </summary>
+    /// <param name="show">Obiectul AnimatedShow care urmeaza sa fie validat</param>
+    /// <exception cref="ArgumentException">Daca show este null sau daca exista una sau mai multe erori de validare</exception>
     public static void Validate(AnimatedShow show)
     {
         var errors = new List<string>();
@@ -145,6 +170,12 @@ public static class ShowValidator
         Normalize(show);
     }
 
+    /// <summary>
+    /// Normalizeaza campurile unui obiect AnimatedShow dupa ce validarea a trecut cu succes.
+    /// Trimite spatiile albe din campurile text, reseteaza scorul daca nu s-au vazut episoade
+    /// si sincronizeaza statusul cu numarul de episoade vizionate.
+    /// </summary>
+    /// <param name="show">Obiectul AnimatedShow care urmeaza sa fie normalizat. Se modifica direct (in-place).</param>
     private static void Normalize(AnimatedShow show)
     {
         show.Title = show.Title.Trim();
