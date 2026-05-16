@@ -1,4 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net6.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
   <ItemGroup><ProjectReference Include="..\ToonTracker.Domain\ToonTracker.Domain.csproj" /><ProjectReference Include="..\ToonTracker.Services\ToonTracker.Services.csproj" /></ItemGroup>
+  <ItemGroup>
+    <None Update="HelpToonTracker.chm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

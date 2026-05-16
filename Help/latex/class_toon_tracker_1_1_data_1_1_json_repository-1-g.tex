@@ -1,0 +1,90 @@
+\doxysection{Toon\+Tracker.\+Data.\+Json\+Repository\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{class_toon_tracker_1_1_data_1_1_json_repository-1-g}{}\label{class_toon_tracker_1_1_data_1_1_json_repository-1-g}\index{ToonTracker.Data.JsonRepository$<$ T $>$@{ToonTracker.Data.JsonRepository$<$ T $>$}}
+
+
+Implementare a repository-\/ului care persista datele intr-\/un fisier JSON de pe disc.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_toon_tracker_1_1_data_1_1_json_repository-1-g_aced857d7931f67f837eb1c23eb00640f}{Json\+Repository}} (string file\+Path)
+\begin{DoxyCompactList}\small\item\em Constructorul repository-\/ului JSON. \end{DoxyCompactList}\item 
+IRead\+Only\+List$<$ T $>$ \doxymbox{\hyperlink{class_toon_tracker_1_1_data_1_1_json_repository-1-g_a65571ce7df9d746bef9ec03b1eb0a7ec}{Get\+All}} ()
+\begin{DoxyCompactList}\small\item\em Citeste si returneaza toate obiectele din fisierul JSON. Daca fisierul nu exista, returneaza o lista goala. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_toon_tracker_1_1_data_1_1_json_repository-1-g_a645a37af395e33775d54d9be9c9ef5ae}{Save\+All}} (IEnumerable$<$ T $>$ items)
+\begin{DoxyCompactList}\small\item\em Serialializeaza si salveaza toate obiectele in fisierul JSON, suprascriind continutul anterior. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementare a repository-\/ului care persista datele intr-\/un fisier JSON de pe disc. 
+
+\label{class_toon_tracker_1_1_data_1_1_json_repository-1-g_doc-func-members}
+\Hypertarget{class_toon_tracker_1_1_data_1_1_json_repository-1-g_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_toon_tracker_1_1_data_1_1_json_repository-1-g_a65571ce7df9d746bef9ec03b1eb0a7ec}\index{ToonTracker.Data.JsonRepository$<$ T $>$@{ToonTracker.Data.JsonRepository$<$ T $>$}!GetAll@{GetAll}}
+\index{GetAll@{GetAll}!ToonTracker.Data.JsonRepository$<$ T $>$@{ToonTracker.Data.JsonRepository$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetAll()}{GetAll()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_data_1_1_json_repository-1-g_a65571ce7df9d746bef9ec03b1eb0a7ec} 
+IRead\+Only\+List$<$ T $>$ Toon\+Tracker.\+Data.\+Json\+Repository$<$ T $>$.Get\+All (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Citeste si returneaza toate obiectele din fisierul JSON. Daca fisierul nu exista, returneaza o lista goala. 
+
+\begin{DoxyReturn}{Returns}
+Lista read-\/only a tuturor obiectelor deserializate
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Invalid\+Operation\+Exception} & Daca fisierul este corupt sau nu poate fi citit de pe disc\\
+\hline
+\end{DoxyExceptions}
+
+
+Implements \doxymbox{\hyperlink{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_a22a9386bb97b23e77934e3f7de039872}{Toon\+Tracker.\+Data.\+IRepository$<$ T $>$}}.
+
+\Hypertarget{class_toon_tracker_1_1_data_1_1_json_repository-1-g_aced857d7931f67f837eb1c23eb00640f}\index{ToonTracker.Data.JsonRepository$<$ T $>$@{ToonTracker.Data.JsonRepository$<$ T $>$}!JsonRepository@{JsonRepository}}
+\index{JsonRepository@{JsonRepository}!ToonTracker.Data.JsonRepository$<$ T $>$@{ToonTracker.Data.JsonRepository$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{JsonRepository()}{JsonRepository()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_data_1_1_json_repository-1-g_aced857d7931f67f837eb1c23eb00640f} 
+Toon\+Tracker.\+Data.\+Json\+Repository$<$ T $>$.Json\+Repository (\begin{DoxyParamCaption}\item[{string}]{file\+Path}{}\end{DoxyParamCaption})}
+
+
+
+Constructorul repository-\/ului JSON. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Path} & Calea catre fisierul JSON folosit pentru persistenta datelor\\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_toon_tracker_1_1_data_1_1_json_repository-1-g_a645a37af395e33775d54d9be9c9ef5ae}\index{ToonTracker.Data.JsonRepository$<$ T $>$@{ToonTracker.Data.JsonRepository$<$ T $>$}!SaveAll@{SaveAll}}
+\index{SaveAll@{SaveAll}!ToonTracker.Data.JsonRepository$<$ T $>$@{ToonTracker.Data.JsonRepository$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAll()}{SaveAll()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_data_1_1_json_repository-1-g_a645a37af395e33775d54d9be9c9ef5ae} 
+void Toon\+Tracker.\+Data.\+Json\+Repository$<$ T $>$.Save\+All (\begin{DoxyParamCaption}\item[{IEnumerable$<$ T $>$}]{items}{}\end{DoxyParamCaption})}
+
+
+
+Serialializeaza si salveaza toate obiectele in fisierul JSON, suprascriind continutul anterior. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em items} & Colectia de obiecte de salvat\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Invalid\+Operation\+Exception} & Daca fisierul nu poate fi scris pe disc\\
+\hline
+\end{DoxyExceptions}
+
+
+Implements \doxymbox{\hyperlink{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_a381d397b06dc12659b7dcd06946723bb}{Toon\+Tracker.\+Data.\+IRepository$<$ T $>$}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+C:\+/\+\+Users/\+user/\+\+Toon\+Tracker/\+\+Toon\+Tracker.\+Data/\+\doxymbox{\hyperlink{_json_repository_8cs}{Json\+Repository.\+cs}}\end{DoxyCompactItemize}

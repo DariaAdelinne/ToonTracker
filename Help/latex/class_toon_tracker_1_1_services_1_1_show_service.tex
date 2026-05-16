@@ -1,0 +1,172 @@
+\doxysection{Toon\+Tracker.\+Services.\+Show\+Service Class Reference}
+\hypertarget{class_toon_tracker_1_1_services_1_1_show_service}{}\label{class_toon_tracker_1_1_services_1_1_show_service}\index{ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}}
+
+
+Serviciu pentru gestionarea serialelor animate.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_show_service_a8c2a7db870b87cc9b5ea8ebc0a353108}{Show\+Service}} (IRepository$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ repository)
+\begin{DoxyCompactList}\small\item\em Constructorul serviciului pentru seriale. \end{DoxyCompactList}\item 
+IRead\+Only\+List$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_show_service_ace02e742e79a00caaaaf3025a1c81e27}{Get\+All}} ()
+\item 
+\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_show_service_a1aca38b766ebd159f5d95c294549d48e}{Add}} (\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} show)
+\begin{DoxyCompactList}\small\item\em Adauga un serial nou, dupa validare si verificarea duplicatelor dupa titlu. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_show_service_a9dfb70e6efe55cd433dd4d2cd8a28e5d}{Update}} (\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} show)
+\begin{DoxyCompactList}\small\item\em Actualizeaza datele unui serial existent, dupa validare si verificarea duplicatelor dupa titlu. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_show_service_a5c6bcf1620706e50dda606989017bd87}{Delete}} (Guid id)
+\begin{DoxyCompactList}\small\item\em Sterge un serial dupa ID. \end{DoxyCompactList}\item 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_show_service_ad5e8648d6f42a27ca7a69b86153c1bf1}{Search}} (string text)
+\begin{DoxyCompactList}\small\item\em Cauta seriale dupa titlu, gen sau studio. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_show_service_a05ebac186812adee3cc8ebc72c6ad5c3}{Mark\+Episode\+Watched}} (Guid id, int episodes=1)
+\begin{DoxyCompactList}\small\item\em Marcheaza un numar de episoade ca vizionate si actualizeaza statusul serialului. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Serviciu pentru gestionarea serialelor animate. 
+
+\label{class_toon_tracker_1_1_services_1_1_show_service_doc-constructors}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_a8c2a7db870b87cc9b5ea8ebc0a353108}\index{ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}!ShowService@{ShowService}}
+\index{ShowService@{ShowService}!ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}}
+\doxysubsubsection{\texorpdfstring{ShowService()}{ShowService()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_show_service_a8c2a7db870b87cc9b5ea8ebc0a353108} 
+Toon\+Tracker.\+Services.\+Show\+Service.\+Show\+Service (\begin{DoxyParamCaption}\item[{IRepository$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{repository}{}\end{DoxyParamCaption})}
+
+
+
+Constructorul serviciului pentru seriale. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em repository} & Repository-\/ul folosit pentru persistenta datelor\\
+\hline
+\end{DoxyParams}
+
+
+\label{class_toon_tracker_1_1_services_1_1_show_service_doc-func-members}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_a1aca38b766ebd159f5d95c294549d48e}\index{ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}!Add@{Add}}
+\index{Add@{Add}!ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}}
+\doxysubsubsection{\texorpdfstring{Add()}{Add()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_show_service_a1aca38b766ebd159f5d95c294549d48e} 
+\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} Toon\+Tracker.\+Services.\+Show\+Service.\+Add (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}}}]{show}{}\end{DoxyParamCaption})}
+
+
+
+Adauga un serial nou, dupa validare si verificarea duplicatelor dupa titlu. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em show} & Serialul de adaugat\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Serialul adaugat
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Invalid\+Operation\+Exception} & Daca exista deja un serial cu acelasi titlu\\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_a5c6bcf1620706e50dda606989017bd87}\index{ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}!Delete@{Delete}}
+\index{Delete@{Delete}!ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}}
+\doxysubsubsection{\texorpdfstring{Delete()}{Delete()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_show_service_a5c6bcf1620706e50dda606989017bd87} 
+void Toon\+Tracker.\+Services.\+Show\+Service.\+Delete (\begin{DoxyParamCaption}\item[{Guid}]{id}{}\end{DoxyParamCaption})}
+
+
+
+Sterge un serial dupa ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & ID-\/ul serialului de sters\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Key\+Not\+Found\+Exception} & Daca serialul nu a fost gasit\\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_ace02e742e79a00caaaaf3025a1c81e27}\index{ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}!GetAll@{GetAll}}
+\index{GetAll@{GetAll}!ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}}
+\doxysubsubsection{\texorpdfstring{GetAll()}{GetAll()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_show_service_ace02e742e79a00caaaaf3025a1c81e27} 
+IRead\+Only\+List$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ Toon\+Tracker.\+Services.\+Show\+Service.\+Get\+All (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_a05ebac186812adee3cc8ebc72c6ad5c3}\index{ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}!MarkEpisodeWatched@{MarkEpisodeWatched}}
+\index{MarkEpisodeWatched@{MarkEpisodeWatched}!ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}}
+\doxysubsubsection{\texorpdfstring{MarkEpisodeWatched()}{MarkEpisodeWatched()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_show_service_a05ebac186812adee3cc8ebc72c6ad5c3} 
+void Toon\+Tracker.\+Services.\+Show\+Service.\+Mark\+Episode\+Watched (\begin{DoxyParamCaption}\item[{Guid}]{id}{, }\item[{int}]{episodes}{ = {\ttfamily 1}}\end{DoxyParamCaption})}
+
+
+
+Marcheaza un numar de episoade ca vizionate si actualizeaza statusul serialului. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & ID-\/ul serialului\\
+\hline
+{\em episodes} & Numarul de episoade de marcat ca vizionate\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Argument\+Exception} & Daca numarul de episoade este invalid\\
+\hline
+{\em Key\+Not\+Found\+Exception} & Daca serialul nu a fost gasit\\
+\hline
+{\em Invalid\+Operation\+Exception} & Daca serialul este deja complet vizionat\\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_ad5e8648d6f42a27ca7a69b86153c1bf1}\index{ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}!Search@{Search}}
+\index{Search@{Search}!ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}}
+\doxysubsubsection{\texorpdfstring{Search()}{Search()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_show_service_ad5e8648d6f42a27ca7a69b86153c1bf1} 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ Toon\+Tracker.\+Services.\+Show\+Service.\+Search (\begin{DoxyParamCaption}\item[{string}]{text}{}\end{DoxyParamCaption})}
+
+
+
+Cauta seriale dupa titlu, gen sau studio. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em text} & Textul cautat\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Lista serialelor care corespund cautarii
+\end{DoxyReturn}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_show_service_a9dfb70e6efe55cd433dd4d2cd8a28e5d}\index{ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}!Update@{Update}}
+\index{Update@{Update}!ToonTracker.Services.ShowService@{ToonTracker.Services.ShowService}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_show_service_a9dfb70e6efe55cd433dd4d2cd8a28e5d} 
+void Toon\+Tracker.\+Services.\+Show\+Service.\+Update (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}}}]{show}{}\end{DoxyParamCaption})}
+
+
+
+Actualizeaza datele unui serial existent, dupa validare si verificarea duplicatelor dupa titlu. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em show} & Serialul cu datele actualizate\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Key\+Not\+Found\+Exception} & Daca serialul nu a fost gasit\\
+\hline
+{\em Invalid\+Operation\+Exception} & Daca exista deja un alt serial cu acelasi titlu\\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+C:\+/\+\+Users/\+user/\+\+Toon\+Tracker/\+\+Toon\+Tracker.\+Services/\+\doxymbox{\hyperlink{_show_service_8cs}{Show\+Service.\+cs}}\end{DoxyCompactItemize}

@@ -1,0 +1,71 @@
+\doxysection{Toon\+Tracker.\+Services.\+IRecommendation\+Strategy Interface Reference}
+\hypertarget{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy}{}\label{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy}\index{ToonTracker.Services.IRecommendationStrategy@{ToonTracker.Services.IRecommendationStrategy}}
+
+
+Interfata pentru strategiile de recomandare de seriale.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ \doxymbox{\hyperlink{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a18132d2994f4f80955721d529c17eb42}{Recommend}} (IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ shows, \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_user_profile}{User\+Profile}} profile, int count=5)
+\begin{DoxyCompactList}\small\item\em Returneaza seriale recomandate pe baza profilului utilizatorului. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \doxymbox{\hyperlink{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a3067e0e5de4a4dafd4b48cf150f03b2a}{Name}}\hspace{0.3cm}{\ttfamily  \+[get]\+}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interfata pentru strategiile de recomandare de seriale. 
+
+\label{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_doc-func-members}
+\Hypertarget{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a18132d2994f4f80955721d529c17eb42}\index{ToonTracker.Services.IRecommendationStrategy@{ToonTracker.Services.IRecommendationStrategy}!Recommend@{Recommend}}
+\index{Recommend@{Recommend}!ToonTracker.Services.IRecommendationStrategy@{ToonTracker.Services.IRecommendationStrategy}}
+\doxysubsubsection{\texorpdfstring{Recommend()}{Recommend()}}
+{\footnotesize\ttfamily \label{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a18132d2994f4f80955721d529c17eb42} 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ Toon\+Tracker.\+Services.\+IRecommendation\+Strategy.\+Recommend (\begin{DoxyParamCaption}\item[{IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{shows}{, }\item[{\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_user_profile}{User\+Profile}}}]{profile}{, }\item[{int}]{count}{ = {\ttfamily 5}}\end{DoxyParamCaption})}
+
+
+
+Returneaza seriale recomandate pe baza profilului utilizatorului. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shows} & Lista serialelor disponibile\\
+\hline
+{\em profile} & Profilul utilizatorului cu preferintele sale\\
+\hline
+{\em count} & Numarul maxim de recomandari returnate\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Lista serialelor recomandate
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_genre_based_recommendation_strategy_a1cf3c625cf2f1d27575eeaef2f5ce40f}{Toon\+Tracker.\+Services.\+Genre\+Based\+Recommendation\+Strategy}}, \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_a00d1b23960229600ba131d182e58a473}{Toon\+Tracker.\+Services.\+Score\+Based\+Recommendation\+Strategy}}, and \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_a8152bb8715864b3486a5c3c53bc6defd}{Toon\+Tracker.\+Services.\+Smart\+Recommendation\+Strategy}}.
+
+
+
+\label{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_doc-property-members}
+\Hypertarget{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_doc-property-members}
+\doxysubsection{Property Documentation}
+\Hypertarget{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a3067e0e5de4a4dafd4b48cf150f03b2a}\index{ToonTracker.Services.IRecommendationStrategy@{ToonTracker.Services.IRecommendationStrategy}!Name@{Name}}
+\index{Name@{Name}!ToonTracker.Services.IRecommendationStrategy@{ToonTracker.Services.IRecommendationStrategy}}
+\doxysubsubsection{\texorpdfstring{Name}{Name}}
+{\footnotesize\ttfamily \label{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a3067e0e5de4a4dafd4b48cf150f03b2a} 
+string Toon\+Tracker.\+Services.\+IRecommendation\+Strategy.\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implemented in \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_genre_based_recommendation_strategy_ae042bb9c54b84958c5b77208c66e2c45}{Toon\+Tracker.\+Services.\+Genre\+Based\+Recommendation\+Strategy}}, \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_a5539be3a6c32ca9c2837d53856e30f1f}{Toon\+Tracker.\+Services.\+Score\+Based\+Recommendation\+Strategy}}, and \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_ab5dc520bc3e4c0486aa404c0b13db296}{Toon\+Tracker.\+Services.\+Smart\+Recommendation\+Strategy}}.
+
+
+
+The documentation for this interface was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+C:\+/\+\+Users/\+user/\+\+Toon\+Tracker/\+\+Toon\+Tracker.\+Services/\+\doxymbox{\hyperlink{_i_recommendation_strategy_8cs}{IRecommendation\+Strategy.\+cs}}\end{DoxyCompactItemize}

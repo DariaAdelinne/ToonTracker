@@ -217,11 +217,7 @@ public class MainForm : Form
         statisticsButton.Click += (_, _) => ShowStatistics();
         exportButton.Click += (_, _) => ExportReport();
         themeButton.Click += (_, _) => ChooseTheme();
-        helpButton.Click += (_, _) => MessageBox.Show(
-            HelpText.Content,
-            "Ajutor ToonTracker",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information);
+        helpButton.Click += (_, _) => Help.ShowHelp(this, System.Environment.CurrentDirectory + "\\HelpToonTracker.chm");
         resetButton.Click += (_, _) => ResetFilters();
         addToWishlistButton.Click += (_, _) => AddSelectedRecommendationToWishlist();
 

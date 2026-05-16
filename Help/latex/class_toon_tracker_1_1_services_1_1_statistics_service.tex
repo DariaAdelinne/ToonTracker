@@ -1,0 +1,103 @@
+\doxysection{Toon\+Tracker.\+Services.\+Statistics\+Service Class Reference}
+\hypertarget{class_toon_tracker_1_1_services_1_1_statistics_service}{}\label{class_toon_tracker_1_1_services_1_1_statistics_service}\index{ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}}
+
+
+Serviciu pentru calculul statisticilor colectiei de seriale animate.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_statistics_service_a740cac47cc9a1a53183a94c71049ff53}{Count\+Finished}} (IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ shows)
+\begin{DoxyCompactList}\small\item\em Returneaza numarul de seriale finalizate. \end{DoxyCompactList}\item 
+double \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_statistics_service_a3dd50539b1000a295e69c9ff3d1da1f9}{Average\+Score}} (IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ shows)
+\begin{DoxyCompactList}\small\item\em Calculeaza scorul mediu personal al serialelor din colectie. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_statistics_service_aba1b08a32d0ee6965cc564e2755fb33d}{Remaining\+Episodes}} (IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ shows)
+\begin{DoxyCompactList}\small\item\em Calculeaza numarul total de episoade ramase nevizionate in colectie. \end{DoxyCompactList}\item 
+string \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_statistics_service_a1a174fd1d97ce1cceeb8ea1393f90ce0}{Favorite\+Genre}} (IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ shows)
+\begin{DoxyCompactList}\small\item\em Determina genul cel mai frecvent intalnit in colectia utilizatorului. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Serviciu pentru calculul statisticilor colectiei de seriale animate. 
+
+\label{class_toon_tracker_1_1_services_1_1_statistics_service_doc-func-members}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_statistics_service_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_statistics_service_a3dd50539b1000a295e69c9ff3d1da1f9}\index{ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}!AverageScore@{AverageScore}}
+\index{AverageScore@{AverageScore}!ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}}
+\doxysubsubsection{\texorpdfstring{AverageScore()}{AverageScore()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_statistics_service_a3dd50539b1000a295e69c9ff3d1da1f9} 
+double Toon\+Tracker.\+Services.\+Statistics\+Service.\+Average\+Score (\begin{DoxyParamCaption}\item[{IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{shows}{}\end{DoxyParamCaption})}
+
+
+
+Calculeaza scorul mediu personal al serialelor din colectie. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shows} & Lista serialelor din colectia utilizatorului\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Media scorurilor rotunjita la 2 zecimale, sau 0 daca lista este goala
+\end{DoxyReturn}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_statistics_service_a740cac47cc9a1a53183a94c71049ff53}\index{ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}!CountFinished@{CountFinished}}
+\index{CountFinished@{CountFinished}!ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}}
+\doxysubsubsection{\texorpdfstring{CountFinished()}{CountFinished()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_statistics_service_a740cac47cc9a1a53183a94c71049ff53} 
+int Toon\+Tracker.\+Services.\+Statistics\+Service.\+Count\+Finished (\begin{DoxyParamCaption}\item[{IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{shows}{}\end{DoxyParamCaption})}
+
+
+
+Returneaza numarul de seriale finalizate. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shows} & Lista serialelor din colectia utilizatorului\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Numarul de seriale cu statusul Finished
+\end{DoxyReturn}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_statistics_service_a1a174fd1d97ce1cceeb8ea1393f90ce0}\index{ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}!FavoriteGenre@{FavoriteGenre}}
+\index{FavoriteGenre@{FavoriteGenre}!ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}}
+\doxysubsubsection{\texorpdfstring{FavoriteGenre()}{FavoriteGenre()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_statistics_service_a1a174fd1d97ce1cceeb8ea1393f90ce0} 
+string Toon\+Tracker.\+Services.\+Statistics\+Service.\+Favorite\+Genre (\begin{DoxyParamCaption}\item[{IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{shows}{}\end{DoxyParamCaption})}
+
+
+
+Determina genul cel mai frecvent intalnit in colectia utilizatorului. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shows} & Lista serialelor din colectia utilizatorului\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Numele genului cu cele mai multe seriale, sau "{}\+Nedefinit"{} daca lista este goala
+\end{DoxyReturn}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_statistics_service_aba1b08a32d0ee6965cc564e2755fb33d}\index{ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}!RemainingEpisodes@{RemainingEpisodes}}
+\index{RemainingEpisodes@{RemainingEpisodes}!ToonTracker.Services.StatisticsService@{ToonTracker.Services.StatisticsService}}
+\doxysubsubsection{\texorpdfstring{RemainingEpisodes()}{RemainingEpisodes()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_statistics_service_aba1b08a32d0ee6965cc564e2755fb33d} 
+int Toon\+Tracker.\+Services.\+Statistics\+Service.\+Remaining\+Episodes (\begin{DoxyParamCaption}\item[{IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{shows}{}\end{DoxyParamCaption})}
+
+
+
+Calculeaza numarul total de episoade ramase nevizionate in colectie. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shows} & Lista serialelor din colectia utilizatorului\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Suma episoadelor nevizionate din toate serialele
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+C:\+/\+\+Users/\+user/\+\+Toon\+Tracker/\+\+Toon\+Tracker.\+Services/\+\doxymbox{\hyperlink{_statistics_service_8cs}{Statistics\+Service.\+cs}}\end{DoxyCompactItemize}

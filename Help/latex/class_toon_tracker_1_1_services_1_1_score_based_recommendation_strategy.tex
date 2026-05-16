@@ -1,0 +1,71 @@
+\doxysection{Toon\+Tracker.\+Services.\+Score\+Based\+Recommendation\+Strategy Class Reference}
+\hypertarget{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy}{}\label{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy}\index{ToonTracker.Services.ScoreBasedRecommendationStrategy@{ToonTracker.Services.ScoreBasedRecommendationStrategy}}
+
+
+Strategie de recomandare bazata pe scorul personal al serialelor.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_a00d1b23960229600ba131d182e58a473}{Recommend}} (IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ shows, \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_user_profile}{User\+Profile}} profile, int count=5)
+\begin{DoxyCompactList}\small\item\em Returneaza serialele cu cel mai mare scor personal, filtrate dupa ratingul acceptat. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_a5539be3a6c32ca9c2837d53856e30f1f}{Name}}\hspace{0.3cm}{\ttfamily  \+[get]\+}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Strategie de recomandare bazata pe scorul personal al serialelor. 
+
+\label{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_doc-func-members}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_a00d1b23960229600ba131d182e58a473}\index{ToonTracker.Services.ScoreBasedRecommendationStrategy@{ToonTracker.Services.ScoreBasedRecommendationStrategy}!Recommend@{Recommend}}
+\index{Recommend@{Recommend}!ToonTracker.Services.ScoreBasedRecommendationStrategy@{ToonTracker.Services.ScoreBasedRecommendationStrategy}}
+\doxysubsubsection{\texorpdfstring{Recommend()}{Recommend()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_a00d1b23960229600ba131d182e58a473} 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ Toon\+Tracker.\+Services.\+Score\+Based\+Recommendation\+Strategy.\+Recommend (\begin{DoxyParamCaption}\item[{IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{shows}{, }\item[{\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_user_profile}{User\+Profile}}}]{profile}{, }\item[{int}]{count}{ = {\ttfamily 5}}\end{DoxyParamCaption})}
+
+
+
+Returneaza serialele cu cel mai mare scor personal, filtrate dupa ratingul acceptat. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shows} & Lista serialelor disponibile\\
+\hline
+{\em profile} & Profilul utilizatorului cu preferintele sale\\
+\hline
+{\em count} & Numarul maxim de recomandari returnate\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Lista serialelor recomandate, sortate dupa scor si progres
+\end{DoxyReturn}
+
+
+Implements \doxymbox{\hyperlink{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a18132d2994f4f80955721d529c17eb42}{Toon\+Tracker.\+Services.\+IRecommendation\+Strategy}}.
+
+
+
+\label{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_doc-property-members}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_doc-property-members}
+\doxysubsection{Property Documentation}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_a5539be3a6c32ca9c2837d53856e30f1f}\index{ToonTracker.Services.ScoreBasedRecommendationStrategy@{ToonTracker.Services.ScoreBasedRecommendationStrategy}!Name@{Name}}
+\index{Name@{Name}!ToonTracker.Services.ScoreBasedRecommendationStrategy@{ToonTracker.Services.ScoreBasedRecommendationStrategy}}
+\doxysubsubsection{\texorpdfstring{Name}{Name}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_score_based_recommendation_strategy_a5539be3a6c32ca9c2837d53856e30f1f} 
+string Toon\+Tracker.\+Services.\+Score\+Based\+Recommendation\+Strategy.\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implements \doxymbox{\hyperlink{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a3067e0e5de4a4dafd4b48cf150f03b2a}{Toon\+Tracker.\+Services.\+IRecommendation\+Strategy}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+C:\+/\+\+Users/\+user/\+\+Toon\+Tracker/\+\+Toon\+Tracker.\+Services/\+\doxymbox{\hyperlink{_score_based_recommendation_strategy_8cs}{Score\+Based\+Recommendation\+Strategy.\+cs}}\end{DoxyCompactItemize}

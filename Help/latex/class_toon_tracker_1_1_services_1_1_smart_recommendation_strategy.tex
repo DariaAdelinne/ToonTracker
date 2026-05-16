@@ -1,0 +1,103 @@
+\doxysection{Toon\+Tracker.\+Services.\+Smart\+Recommendation\+Strategy Class Reference}
+\hypertarget{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy}{}\label{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy}\index{ToonTracker.Services.SmartRecommendationStrategy@{ToonTracker.Services.SmartRecommendationStrategy}}
+
+
+Strategie de recomandare inteligenta bazata pe preferintele utilizatorului, istoricul de vizionare si catalogul intern de titluri disponibile.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_a8152bb8715864b3486a5c3c53bc6defd}{Recommend}} (IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ shows, \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_user_profile}{User\+Profile}} profile, int count=5)
+\begin{DoxyCompactList}\small\item\em Genereaza o lista de recomandari personalizate pe baza istoricului de vizionare si a profilului utilizatorului. Daca nu exista istoric, returneaza cele mai populare titluri din catalog. \end{DoxyCompactList}\item 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_a41fe39a4ccf9d1df089e36a5b6b47c2d}{Recommend\+By\+Preferences}} (IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ existing\+Shows, List$<$ string $>$ preferred\+Genres, List$<$ string $>$ preferred\+Studios, \doxymbox{\hyperlink{namespace_toon_tracker_1_1_domain_acc7575c25100bece8ae80cf5c148f82b}{Age\+Rating}} maximum\+Accepted\+Rating, bool prefer\+Short\+Series, bool prefer\+Long\+Series, int count=8)
+\begin{DoxyCompactList}\small\item\em Genereaza recomandari pe baza preferintelor explicite ale utilizatorului, fara a folosi istoricul de vizionare. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+string \doxymbox{\hyperlink{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_ab5dc520bc3e4c0486aa404c0b13db296}{Name}}\hspace{0.3cm}{\ttfamily  \+[get]\+}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Strategie de recomandare inteligenta bazata pe preferintele utilizatorului, istoricul de vizionare si catalogul intern de titluri disponibile. 
+
+\label{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_doc-func-members}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_a8152bb8715864b3486a5c3c53bc6defd}\index{ToonTracker.Services.SmartRecommendationStrategy@{ToonTracker.Services.SmartRecommendationStrategy}!Recommend@{Recommend}}
+\index{Recommend@{Recommend}!ToonTracker.Services.SmartRecommendationStrategy@{ToonTracker.Services.SmartRecommendationStrategy}}
+\doxysubsubsection{\texorpdfstring{Recommend()}{Recommend()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_a8152bb8715864b3486a5c3c53bc6defd} 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ Toon\+Tracker.\+Services.\+Smart\+Recommendation\+Strategy.\+Recommend (\begin{DoxyParamCaption}\item[{IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{shows}{, }\item[{\doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_user_profile}{User\+Profile}}}]{profile}{, }\item[{int}]{count}{ = {\ttfamily 5}}\end{DoxyParamCaption})}
+
+
+
+Genereaza o lista de recomandari personalizate pe baza istoricului de vizionare si a profilului utilizatorului. Daca nu exista istoric, returneaza cele mai populare titluri din catalog. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shows} & Lista serialelor deja existente in colectia utilizatorului\\
+\hline
+{\em profile} & Profilul utilizatorului, folosit pentru rating maxim acceptat\\
+\hline
+{\em count} & Numarul de recomandari de returnat\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Lista serialelor recomandate, ordonate dupa scorul de potrivire
+\end{DoxyReturn}
+
+
+Implements \doxymbox{\hyperlink{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a18132d2994f4f80955721d529c17eb42}{Toon\+Tracker.\+Services.\+IRecommendation\+Strategy}}.
+
+\Hypertarget{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_a41fe39a4ccf9d1df089e36a5b6b47c2d}\index{ToonTracker.Services.SmartRecommendationStrategy@{ToonTracker.Services.SmartRecommendationStrategy}!RecommendByPreferences@{RecommendByPreferences}}
+\index{RecommendByPreferences@{RecommendByPreferences}!ToonTracker.Services.SmartRecommendationStrategy@{ToonTracker.Services.SmartRecommendationStrategy}}
+\doxysubsubsection{\texorpdfstring{RecommendByPreferences()}{RecommendByPreferences()}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_a41fe39a4ccf9d1df089e36a5b6b47c2d} 
+IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$ Toon\+Tracker.\+Services.\+Smart\+Recommendation\+Strategy.\+Recommend\+By\+Preferences (\begin{DoxyParamCaption}\item[{IEnumerable$<$ \doxymbox{\hyperlink{class_toon_tracker_1_1_domain_1_1_animated_show}{Animated\+Show}} $>$}]{existing\+Shows}{, }\item[{List$<$ string $>$}]{preferred\+Genres}{, }\item[{List$<$ string $>$}]{preferred\+Studios}{, }\item[{\doxymbox{\hyperlink{namespace_toon_tracker_1_1_domain_acc7575c25100bece8ae80cf5c148f82b}{Age\+Rating}}}]{maximum\+Accepted\+Rating}{, }\item[{bool}]{prefer\+Short\+Series}{, }\item[{bool}]{prefer\+Long\+Series}{, }\item[{int}]{count}{ = {\ttfamily 8}}\end{DoxyParamCaption})}
+
+
+
+Genereaza recomandari pe baza preferintelor explicite ale utilizatorului, fara a folosi istoricul de vizionare. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em existing\+Shows} & Serialele deja existente in colectia utilizatorului, pentru excludere\\
+\hline
+{\em preferred\+Genres} & Lista genurilor preferate selectate de utilizator\\
+\hline
+{\em preferred\+Studios} & Lista studiourilor preferate selectate de utilizator\\
+\hline
+{\em maximum\+Accepted\+Rating} & Rating-\/ul maxim acceptat de utilizator\\
+\hline
+{\em prefer\+Short\+Series} & Daca utilizatorul prefera seriale scurte (max 50 episoade)\\
+\hline
+{\em prefer\+Long\+Series} & Daca utilizatorul prefera seriale lungi (min 80 episoade)\\
+\hline
+{\em count} & Numarul de recomandari de returnat\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Lista serialelor recomandate, ordonate dupa scorul de potrivire
+\end{DoxyReturn}
+
+
+\label{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_doc-property-members}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_doc-property-members}
+\doxysubsection{Property Documentation}
+\Hypertarget{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_ab5dc520bc3e4c0486aa404c0b13db296}\index{ToonTracker.Services.SmartRecommendationStrategy@{ToonTracker.Services.SmartRecommendationStrategy}!Name@{Name}}
+\index{Name@{Name}!ToonTracker.Services.SmartRecommendationStrategy@{ToonTracker.Services.SmartRecommendationStrategy}}
+\doxysubsubsection{\texorpdfstring{Name}{Name}}
+{\footnotesize\ttfamily \label{class_toon_tracker_1_1_services_1_1_smart_recommendation_strategy_ab5dc520bc3e4c0486aa404c0b13db296} 
+string Toon\+Tracker.\+Services.\+Smart\+Recommendation\+Strategy.\+Name\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Implements \doxymbox{\hyperlink{interface_toon_tracker_1_1_services_1_1_i_recommendation_strategy_a3067e0e5de4a4dafd4b48cf150f03b2a}{Toon\+Tracker.\+Services.\+IRecommendation\+Strategy}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+C:\+/\+\+Users/\+user/\+\+Toon\+Tracker/\+\+Toon\+Tracker.\+Services/\+\doxymbox{\hyperlink{_smart_recommendation_strategy_8cs}{Smart\+Recommendation\+Strategy.\+cs}}\end{DoxyCompactItemize}

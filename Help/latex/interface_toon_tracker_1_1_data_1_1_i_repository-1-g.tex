@@ -1,0 +1,63 @@
+\doxysection{Toon\+Tracker.\+Data.\+IRepository\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Interface Template Reference}
+\hypertarget{interface_toon_tracker_1_1_data_1_1_i_repository-1-g}{}\label{interface_toon_tracker_1_1_data_1_1_i_repository-1-g}\index{ToonTracker.Data.IRepository$<$ T $>$@{ToonTracker.Data.IRepository$<$ T $>$}}
+
+
+Interfata generica pentru persistenta si recuperarea datelor.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+IRead\+Only\+List$<$ T $>$ \doxymbox{\hyperlink{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_a22a9386bb97b23e77934e3f7de039872}{Get\+All}} ()
+\begin{DoxyCompactList}\small\item\em Returneaza toate obiectele din sursa de date. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_a381d397b06dc12659b7dcd06946723bb}{Save\+All}} (IEnumerable$<$ T $>$ items)
+\begin{DoxyCompactList}\small\item\em Salveaza toate obiectele in sursa de date, suprascriind continutul anterior. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interfata generica pentru persistenta si recuperarea datelor. 
+
+\label{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_doc-func-members}
+\Hypertarget{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_a22a9386bb97b23e77934e3f7de039872}\index{ToonTracker.Data.IRepository$<$ T $>$@{ToonTracker.Data.IRepository$<$ T $>$}!GetAll@{GetAll}}
+\index{GetAll@{GetAll}!ToonTracker.Data.IRepository$<$ T $>$@{ToonTracker.Data.IRepository$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetAll()}{GetAll()}}
+{\footnotesize\ttfamily \label{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_a22a9386bb97b23e77934e3f7de039872} 
+IRead\+Only\+List$<$ T $>$ Toon\+Tracker.\+Data.\+IRepository$<$ T $>$.Get\+All (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Returneaza toate obiectele din sursa de date. 
+
+\begin{DoxyReturn}{Returns}
+Lista read-\/only a tuturor obiectelor
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{class_toon_tracker_1_1_data_1_1_json_repository-1-g_a65571ce7df9d746bef9ec03b1eb0a7ec}{Toon\+Tracker.\+Data.\+Json\+Repository$<$ T $>$}}.
+
+\Hypertarget{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_a381d397b06dc12659b7dcd06946723bb}\index{ToonTracker.Data.IRepository$<$ T $>$@{ToonTracker.Data.IRepository$<$ T $>$}!SaveAll@{SaveAll}}
+\index{SaveAll@{SaveAll}!ToonTracker.Data.IRepository$<$ T $>$@{ToonTracker.Data.IRepository$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SaveAll()}{SaveAll()}}
+{\footnotesize\ttfamily \label{interface_toon_tracker_1_1_data_1_1_i_repository-1-g_a381d397b06dc12659b7dcd06946723bb} 
+void Toon\+Tracker.\+Data.\+IRepository$<$ T $>$.Save\+All (\begin{DoxyParamCaption}\item[{IEnumerable$<$ T $>$}]{items}{}\end{DoxyParamCaption})}
+
+
+
+Salveaza toate obiectele in sursa de date, suprascriind continutul anterior. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em items} & Colectia de obiecte de salvat\\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \doxymbox{\hyperlink{class_toon_tracker_1_1_data_1_1_json_repository-1-g_a645a37af395e33775d54d9be9c9ef5ae}{Toon\+Tracker.\+Data.\+Json\+Repository$<$ T $>$}}.
+
+
+
+The documentation for this interface was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+C:\+/\+\+Users/\+user/\+\+Toon\+Tracker/\+\+Toon\+Tracker.\+Data/\+\doxymbox{\hyperlink{_i_repository_8cs}{IRepository.\+cs}}\end{DoxyCompactItemize}
