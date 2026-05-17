@@ -5,13 +5,6 @@
  *  Description: Formularul principal pentru                              *
  *  gestionarea desenelor animate si serialelor.                          *
  *                                                                        *
- *  This program is free software; you can redistribute it and/or modify  *
- *  it under the terms of the GNU General Public License as published by  *
- *  the Free Software Foundation. This program is distributed in the      *
- *  hope that it will be useful, but WITHOUT ANY WARRANTY; without even   *
- *  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   *
- *  PURPOSE. See the GNU General Public License for more details.         *
- *                                                                        *
  **************************************************************************/
 
 using System.Text;
@@ -34,30 +27,13 @@ public enum AppTheme
 /// <summary>
 /// Clasa principala a interfetei grafice pentru gestionarea colectiei de seriale animate.
 /// </summary>
-public class MainForm : Form
+public partial class MainForm : Form
 {
     private readonly ShowService _showService;
     private readonly StatisticsService _statistics = new();
     private readonly SmartRecommendationStrategy _smartStrategy = new SmartRecommendationStrategy();
-
-    private readonly DataGridView _grid = new();
-    private readonly TextBox _searchBox = new();
-    private readonly ComboBox _genreFilter = new();
-    private readonly ComboBox _statusFilter = new();
-    private readonly ComboBox _sortComboBox = new();
-    private readonly Label _statsLabel = new();
-    private readonly BindingSource _bindingSource = new();
-    private readonly TextBox _recommendationsBox = new();
-    private readonly ComboBox _recommendationPicker = new();
     private readonly List<AnimatedShow> _lastRecommendations = new();
-    private Panel? _headerPanel;
-    private Panel? _controlsCard;
-    private GroupBox? _collectionGroup;
-    private GroupBox? _recommendationsGroup;
     private AppTheme _currentTheme = AppTheme.CozyPink;
-    private readonly List<Button> _mainButtons = new();
-    private readonly List<Label> _mainLabels = new();
-    private readonly List<GroupBox> _mainGroupBoxes = new();
 
     /// <summary>
     /// Constructor implicit - initializeaza setarile de baza ale ferestrei.
@@ -65,11 +41,9 @@ public class MainForm : Form
     public MainForm()
     {
         _showService = null!;
-        Text = "ToonTracker - jurnal pentru desene animate si seriale";
-        Width = 1100;
-        Height = 680;
-        StartPosition = FormStartPosition.CenterScreen;
-        BuildUi();
+        InitializeComponent();
+        ApplyTheme();
+        ApplyRoundedCornersToStaticControls();
     }
 
     /// <summary>
@@ -79,509 +53,65 @@ public class MainForm : Form
     public MainForm(ShowService showService)
     {
         _showService = showService;
-        Text = "ToonTracker - jurnal pentru desene animate si seriale";
-        MinimumSize = new Size(980, 720);
-        Width = 1200;
-        Height = 750;
-        StartPosition = FormStartPosition.CenterScreen;
-
-        BuildUi();
+        InitializeComponent();
+        ApplyTheme();
+        ApplyRoundedCornersToStaticControls();
         SeedDemoDataIfEmpty();
         LoadData();
     }
 
-    /// <summary>
-    /// Construieste interfata utilizator, configurand layout-ul si controalele.
-    /// </summary>
-    private void BuildUi()
+    private void AddButton_Click(object? sender, EventArgs e) => AddShow();
+    private void EditButton_Click(object? sender, EventArgs e) => EditSelected();
+    private void DeleteButton_Click(object? sender, EventArgs e) => DeleteSelected();
+    private void WatchedButton_Click(object? sender, EventArgs e) => MarkWatched();
+    private void RecommendButton_Click(object? sender, EventArgs e) => ShowRecommendations();
+    private void CustomRecommendButton_Click(object? sender, EventArgs e) => ShowCustomRecommendations();
+    private void StatisticsButton_Click(object? sender, EventArgs e) => ShowStatistics();
+    private void ExportButton_Click(object? sender, EventArgs e) => ExportReport();
+    private void ThemeButton_Click(object? sender, EventArgs e) => ChooseTheme();
+    private void ResetButton_Click(object? sender, EventArgs e) => ResetFilters();
+    private void AddToWishlistButton_Click(object? sender, EventArgs e) => AddSelectedRecommendationToWishlist();
+    private void Grid_CellDoubleClick(object? sender, DataGridViewCellEventArgs e) => EditSelected();
+    private void SearchBox_TextChanged(object? sender, EventArgs e) => ApplyFilters();
+    private void SortComboBox_SelectedIndexChanged(object? sender, EventArgs e) => ApplyFilters();
+
+    private void HelpButton_Click(object? sender, EventArgs e)
     {
-        Controls.Clear();
-        _mainButtons.Clear();
-        _mainLabels.Clear();
-        _mainGroupBoxes.Clear();
-
-        // Layout principal pe grila 2 coloane x 5 randuri
-        var root = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            RowCount = 4,
-            ColumnCount = 1,
-            Padding = new Padding(18, 14, 18, 14)
-        };
-
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 74));      // header
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 185));     // butoane si filtre    
-        root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));      // tabel + recomandari
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));      // statistici jos
-
-        Controls.Add(root);
-
-        // HEADER
-        _headerPanel = new Panel
-        {
-            Dock = DockStyle.Fill,
-            Height = 64,
-            Padding = new Padding(22, 10, 22, 10),
-            Margin = new Padding(0, 0, 0, 10)
-        };
-        ApplyRoundedCorners(_headerPanel, 22);
-        _headerPanel.Resize += (_, _) => ApplyRoundedCorners(_headerPanel, 22);
-
-        var headerLayout = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            RowCount = 1,
-            ColumnCount = 1
-        };
-
-        var title = new Label
-        {
-            Text = "ToonTracker",
-            AutoSize = true,
-            Font = new Font(FontFamily.GenericSansSerif, 18, FontStyle.Bold),
-            Margin = new Padding(0),
-            Dock = DockStyle.Fill,
-            TextAlign = ContentAlignment.MiddleLeft
-        };
-
-        _mainLabels.Add(title);
-
-        headerLayout.Controls.Add(title, 0, 0);
-        _headerPanel.Controls.Add(headerLayout);
-        root.Controls.Add(_headerPanel, 0, 0);
-
-        // BUTTONS + FILTERS CARD
-        _controlsCard = new Panel
-        {
-            Dock = DockStyle.Fill,
-            Padding = new Padding(8, 6, 8, 6),
-            Margin = new Padding(0, 0, 0, 10)
-        };
-        ApplyRoundedCorners(_controlsCard, 18);
-        _controlsCard.Resize += (_, _) => ApplyRoundedCorners(_controlsCard, 18);
-
-        var controlsLayout = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 3,
-            RowCount = 1
-        };
-
-        // Layout responsive: cele 3 zone se redimensioneaza proportional cu fereastra.
-        controlsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 24)); // Administrare
-        controlsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 43)); // Descopera
-        controlsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33)); // Filtre
-
-        _controlsCard.Controls.Add(controlsLayout);
-        root.Controls.Add(_controlsCard, 0, 1);
-
-        // Buttons
-        var addButton = CreateStyledButton("Adauga", 78);
-        var editButton = CreateStyledButton("Editeaza", 78);
-        var deleteButton = CreateStyledButton("Sterge", 78);
-        var watchedButton = CreateStyledButton("+1 episod", 82);
-
-        var recommendButton = CreateStyledButton("Recomandari", 110);
-        var customRecommendButton = CreateStyledButton("Preferinte", 100);
-        var statisticsButton = CreateStyledButton("Statistici", 90);
-        var exportButton = CreateStyledButton("Export", 80);
-        var themeButton = CreateStyledButton("Tema", 70);
-        var helpButton = CreateStyledButton("Help", 70);
-
-        var resetButton = CreateStyledButton("Reset", 70);
-        resetButton.Dock = DockStyle.Fill;
-        var addToWishlistButton = CreateStyledButton("Adauga in wishlist", 150);
-
-        _mainButtons.AddRange(new[]
-        {
-    addButton,
-    editButton,
-    deleteButton,
-    watchedButton,
-    recommendButton,
-    customRecommendButton,
-    statisticsButton,
-    exportButton,
-    themeButton,
-    helpButton,
-    resetButton,
-    addToWishlistButton
-});
-
-        addButton.Click += (_, _) => AddShow();
-        editButton.Click += (_, _) => EditSelected();
-        deleteButton.Click += (_, _) => DeleteSelected();
-        watchedButton.Click += (_, _) => MarkWatched();
-        recommendButton.Click += (_, _) => ShowRecommendations();
-        customRecommendButton.Click += (_, _) => ShowCustomRecommendations();
-        statisticsButton.Click += (_, _) => ShowStatistics();
-        exportButton.Click += (_, _) => ExportReport();
-        themeButton.Click += (_, _) => ChooseTheme();
-        helpButton.Click += (_, _) => MessageBox.Show(
+        MessageBox.Show(
             HelpText.Content,
             "Ajutor ToonTracker",
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
-        resetButton.Click += (_, _) => ResetFilters();
-        addToWishlistButton.Click += (_, _) => AddSelectedRecommendationToWishlist();
+    }
 
-        var actionsGroup = CreateSectionGroup("Administrare");
-        var discoverGroup = CreateSectionGroup("Descopera");
-        var filtersGroup = CreateSectionGroup("Cautare & filtre");
+    private void ApplyRoundedCornersToStaticControls()
+    {
+        ApplyRoundedCorners(_headerPanel, 22);
+        ApplyRoundedCorners(_controlsCard, 18);
+        ApplyRoundedCorners(_footerCard, 18);
 
-        _mainGroupBoxes.Add(actionsGroup);
-        _mainGroupBoxes.Add(discoverGroup);
-        _mainGroupBoxes.Add(filtersGroup);
-
-        controlsLayout.Controls.Add(actionsGroup, 0, 0);
-        controlsLayout.Controls.Add(discoverGroup, 1, 0);
-        controlsLayout.Controls.Add(filtersGroup, 2, 0);
-
-        var actionsCenterPanel = new TableLayoutPanel
+        foreach (var button in GetAllControls(this).OfType<Button>())
         {
-            Dock = DockStyle.Fill,
-            RowCount = 1,
-            ColumnCount = 1,
-            Margin = new Padding(0),
-            Padding = new Padding(0)
-        };
+            ApplyRoundedCorners(button, 13);
+        }
+    }
 
-        var actionsFlow = new FlowLayoutPanel
+    private void RoundedControl_Resize(object? sender, EventArgs e)
+    {
+        if (sender is Button button)
         {
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            WrapContents = true,
-            AutoScroll = false,
-            FlowDirection = FlowDirection.LeftToRight,
-            Margin = new Padding(0),
-            Padding = new Padding(0),
-            Anchor = AnchorStyles.None
-        };
-
-        actionsFlow.Controls.Add(addButton);
-        actionsFlow.Controls.Add(editButton);
-        actionsFlow.Controls.Add(deleteButton);
-        actionsFlow.Controls.Add(watchedButton);
-
-        actionsCenterPanel.Controls.Add(actionsFlow, 0, 0);
-        actionsGroup.Controls.Add(actionsCenterPanel);
-
-        var discoverCenterPanel = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            RowCount = 1,
-            ColumnCount = 1,
-            Margin = new Padding(0),
-            Padding = new Padding(0)
-        };
-
-        var discoverFlow = new FlowLayoutPanel
-        {
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            WrapContents = true,
-            AutoScroll = false,
-            FlowDirection = FlowDirection.LeftToRight,
-            Margin = new Padding(0),
-            Padding = new Padding(0),
-            Anchor = AnchorStyles.None
-        };
-
-        discoverFlow.Controls.Add(recommendButton);
-        discoverFlow.Controls.Add(customRecommendButton);
-        discoverFlow.Controls.Add(statisticsButton);
-        discoverFlow.Controls.Add(exportButton);
-        discoverFlow.Controls.Add(themeButton);
-        discoverFlow.Controls.Add(helpButton);
-
-        discoverCenterPanel.Controls.Add(discoverFlow, 0, 0);
-        discoverGroup.Controls.Add(discoverCenterPanel);
-
-        // FILTERS
-        _searchBox.Dock = DockStyle.Fill;
-        _searchBox.PlaceholderText = "Cauta titlu, gen, studio...";
-        _searchBox.TextChanged += (_, _) => ApplyFilters();
-        StyleTextBox(_searchBox);
-
-        _genreFilter.Dock = DockStyle.Fill;
-        _genreFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-        _genreFilter.SelectedIndexChanged += (_, _) => ApplyFilters();
-        StyleComboBox(_genreFilter);
-
-        _statusFilter.Dock = DockStyle.Fill;
-        _statusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-        _statusFilter.SelectedIndexChanged += (_, _) => ApplyFilters();
-        StyleComboBox(_statusFilter);
-
-        _sortComboBox.Dock = DockStyle.Fill;
-        _sortComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-        _sortComboBox.Items.Clear();
-        _sortComboBox.Items.AddRange(new object[]
-        {
-    "Alfabetic",
-    "Numar episoade",
-    "Progres",
-    "Scor"
-        });
-        _sortComboBox.SelectedIndex = 0;
-        _sortComboBox.SelectedIndexChanged += (_, _) => ApplyFilters();
-        StyleComboBox(_sortComboBox);
-
-        var searchLabel = CreateSmallLabel("Cautare");
-        var genreLabel = CreateSmallLabel("Gen");
-        var statusLabel = CreateSmallLabel("Status");
-        var sortLabel = CreateSmallLabel("Ordonare");
-
-        _mainLabels.Add(searchLabel);
-        _mainLabels.Add(genreLabel);
-        _mainLabels.Add(statusLabel);
-        _mainLabels.Add(sortLabel);
-
-        var filtersLayout = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            RowCount = 6,
-            Margin = new Padding(0)
-        };
-
-        filtersLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-        filtersLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
-
-        filtersLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 22)); // label cautare
-        filtersLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 34)); // textbox cautare
-        filtersLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 22)); // label gen/status
-        filtersLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 34)); // combo gen/status
-        filtersLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 22)); // label ordonare
-        filtersLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 36)); // combo ordonare + reset
-
-        filtersLayout.Controls.Add(searchLabel, 0, 0);
-        filtersLayout.SetColumnSpan(searchLabel, 2);
-
-        filtersLayout.Controls.Add(_searchBox, 0, 1);
-        filtersLayout.SetColumnSpan(_searchBox, 2);
-
-        filtersLayout.Controls.Add(genreLabel, 0, 2);
-        filtersLayout.Controls.Add(statusLabel, 1, 2);
-
-        filtersLayout.Controls.Add(_genreFilter, 0, 3);
-        filtersLayout.Controls.Add(_statusFilter, 1, 3);
-
-        filtersLayout.Controls.Add(sortLabel, 0, 4);
-        filtersLayout.Controls.Add(new Panel(), 1, 4);
-
-        filtersLayout.Controls.Add(_sortComboBox, 0, 5);
-        filtersLayout.Controls.Add(resetButton, 1, 5);
-
-        filtersGroup.Controls.Add(filtersLayout);
-
-        // MAIN CONTENT
-        var contentLayout = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            RowCount = 2,
-            ColumnCount = 1
-        };
-        contentLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 63));
-        contentLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 37));
-
-        root.Controls.Add(contentLayout, 0, 2);
-
-        _collectionGroup = CreateSectionGroup("Colectia mea");
-        _recommendationsGroup = CreateSectionGroup("Recomandari inteligente & Wishlist");
-
-        _mainGroupBoxes.Add(_collectionGroup);
-        _mainGroupBoxes.Add(_recommendationsGroup);
-
-        contentLayout.Controls.Add(_collectionGroup, 0, 0);
-        contentLayout.Controls.Add(_recommendationsGroup, 0, 1);
-
-        _grid.Dock = DockStyle.Fill;
-        _grid.AutoGenerateColumns = false;
-        _grid.AllowUserToAddRows = false;
-        _grid.AllowUserToDeleteRows = false;
-        _grid.ReadOnly = true;
-        _grid.MultiSelect = false;
-        _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-        _grid.ScrollBars = ScrollBars.Both;
-        _grid.RowHeadersVisible = false;
-        _grid.BorderStyle = BorderStyle.None;
-        _grid.CellBorderStyle = DataGridViewCellBorderStyle.Single;
-        _grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single; ;
-        _grid.RowTemplate.Height = 32;
-        _grid.ColumnHeadersHeight = 34;
-        _grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        _grid.DefaultCellStyle.Font = new Font(FontFamily.GenericSansSerif, 8.8f);
-        _grid.ColumnHeadersDefaultCellStyle.Font = new Font(FontFamily.GenericSansSerif, 8.8f, FontStyle.Bold);
-        _grid.DataSource = _bindingSource;
-        _grid.CellDoubleClick += (_, _) => EditSelected();
-
-        if (_grid.Columns.Count == 0)
-        {
-            AddGridColumn("Title", "Titlu", 180);
-            AddGridColumn("Studio", "Studio", 130);
-            AddGridColumn("Genre", "Gen", 120);
-            AddGridColumn("TotalEpisodes", "Episoade", 80);
-            AddGridColumn("WatchedEpisodes", "Vazute", 80);
-            AddGridColumn("Progress", "Progres %", 90);
-            AddGridColumn("Rating", "Rating", 80);
-            AddGridColumn("Status", "Status", 100);
-            AddGridColumn("PersonalScore", "Scor", 70);
-            AddGridColumn("FavoriteCharacter", "Personaj favorit", 140);
-            AddGridColumn("Notes", "Note", 200);
+            ApplyRoundedCorners(button, 13);
+            return;
         }
 
-        _collectionGroup.Controls.Add(_grid);
-
-        var recommendationsLayout = new TableLayoutPanel
+        if (ReferenceEquals(sender, _headerPanel))
         {
-            Dock = DockStyle.Fill,
-            RowCount = 2,
-            ColumnCount = 1
-        };
-        recommendationsLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        recommendationsLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
-        _recommendationsBox.Dock = DockStyle.Fill;
-        _recommendationsBox.Multiline = true;
-        _recommendationsBox.ReadOnly = true;
-        _recommendationsBox.ScrollBars = ScrollBars.Vertical;
-        _recommendationsBox.BorderStyle = BorderStyle.FixedSingle;
-        _recommendationsBox.Font = new Font(FontFamily.GenericSansSerif, 9f);
-        _recommendationsBox.Text =
-            "Apasa Recomandari pentru sugestii pe baza titlurilor finalizate sau Recomandari custom pentru preferinte manuale.";
-
-        recommendationsLayout.Controls.Add(_recommendationsBox, 0, 0);
-
-        var wishlistPanel = new FlowLayoutPanel
+            ApplyRoundedCorners(_headerPanel, 22);
+        }
+        else if (ReferenceEquals(sender, _controlsCard) || ReferenceEquals(sender, _footerCard))
         {
-            Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.LeftToRight,
-            AutoSize = true,
-            Padding = new Padding(0, 8, 0, 0),
-            WrapContents = true
-        };
-
-        var pickerLabel = CreateSmallLabel("Recomandare selectata:");
-        _mainLabels.Add(pickerLabel);
-
-        _recommendationPicker.Width = 260;
-        _recommendationPicker.DropDownStyle = ComboBoxStyle.DropDownList;
-        StyleComboBox(_recommendationPicker);
-
-        wishlistPanel.Controls.Add(pickerLabel);
-        wishlistPanel.Controls.Add(_recommendationPicker);
-        wishlistPanel.Controls.Add(addToWishlistButton);
-
-        recommendationsLayout.Controls.Add(wishlistPanel, 0, 1);
-        _recommendationsGroup.Controls.Add(recommendationsLayout);
-
-        // FOOTER STATS
-        var footerCard = new Panel
-        {
-            Dock = DockStyle.Fill,
-            Padding = new Padding(16, 8, 16, 8),
-            Margin = new Padding(0, 10, 0, 0)
-        };
-        ApplyRoundedCorners(footerCard, 18);
-        footerCard.Resize += (_, _) => ApplyRoundedCorners(footerCard, 18);
-
-        _statsLabel.Dock = DockStyle.Fill;
-        _statsLabel.AutoSize = false;
-        _statsLabel.TextAlign = ContentAlignment.MiddleLeft;
-        _statsLabel.Font = new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold);
-
-        _mainLabels.Add(_statsLabel);
-
-        footerCard.Controls.Add(_statsLabel);
-        root.Controls.Add(footerCard, 0, 3);
-
-        ApplyTheme();
-    }
-
-    /// <summary>
-    /// Creeaza un GroupBox stilizat pentru sectiunile interfetei.
-    /// </summary>
-    /// <param name="text">Textul care va fi afisat ca titlu al grupului.</param>
-    /// <returns>Obiectul GroupBox configurat.</returns>
-    private GroupBox CreateSectionGroup(string text)
-    {
-        return new GroupBox
-        {
-            Text = text,
-            Dock = DockStyle.Fill,
-            Padding = new Padding(10, 16, 10, 8),
-            Font = new Font(FontFamily.GenericSansSerif, 8.8f, FontStyle.Bold),
-            Margin = new Padding(4)
-        };
-    }
-
-    /// <summary>
-    /// Creeaza si stilizeaza un buton de control.
-    /// </summary>
-    /// <param name="text">Textul butonului.</param>
-    /// <param name="width">Latimea butonului (implicit 120).</param>
-    /// <returns>Obiectul Button creat.</returns>
-    private Button CreateStyledButton(string text, int width = 120)
-    {
-        var button = new Button
-        {
-            Text = text,
-            Width = width,
-            Height = 30,
-            FlatStyle = FlatStyle.Flat,
-            Cursor = Cursors.Hand,
-            Font = new Font(FontFamily.GenericSansSerif, 8.2f, FontStyle.Bold),
-            Margin = new Padding(4, 3, 4, 3),
-            UseVisualStyleBackColor = false
-        };
-
-        button.FlatAppearance.BorderSize = 0;
-        ApplyRoundedCorners(button, 13);
-        button.Resize += (_, _) => ApplyRoundedCorners(button, 13);
-
-        return button;
-    }
-
-    /// <summary>
-    /// Creeaza un label de dimensiuni mici pentru etichetarea campurilor.
-    /// </summary>
-    /// <param name="text">Continutul text al etichetei.</param>
-    /// <returns>Obiectul Label creat.</returns>
-    private Label CreateSmallLabel(string text)
-    {
-        return new Label
-        {
-            Text = text,
-            AutoSize = true,
-            Font = new Font(FontFamily.GenericSansSerif, 8.4f, FontStyle.Bold),
-            Margin = new Padding(0, 2, 0, 4)
-        };
-    }
-
-    /// <summary>
-    /// Aplica un stil standard pentru TextBox.
-    /// </summary>
-    /// <param name="textBox">Controlul care trebuie stilizat.</param>
-    private void StyleTextBox(TextBox textBox)
-    {
-        textBox.BorderStyle = BorderStyle.FixedSingle;
-        textBox.Font = new Font(FontFamily.GenericSansSerif, 9f);
-        textBox.Margin = new Padding(0, 0, 8, 6);
-        textBox.Height = 30;
-    }
-
-    /// <summary>
-    /// Aplica un stil standard pentru ComboBox.
-    /// </summary>
-    /// <param name="comboBox">Controlul care trebuie stilizat.</param>
-    private void StyleComboBox(ComboBox comboBox)
-    {
-        comboBox.FlatStyle = FlatStyle.Flat;
-        comboBox.Font = new Font(FontFamily.GenericSansSerif, 9f);
-        comboBox.Margin = new Padding(0, 0, 8, 6);
-        comboBox.Height = 30;
+            ApplyRoundedCorners((Control)sender, 18);
+        }
     }
 
     /// <summary>
@@ -608,6 +138,7 @@ public class MainForm : Form
 
         control.Region = new Region(path);
     }
+
 
     /// <summary>
     /// Verifica daca un control este descendentul altui control.
@@ -648,36 +179,6 @@ public class MainForm : Form
                 yield return child;
             }
         }
-    }
-
-    /// <summary>
-    /// Adauga o coloana noua in tabelul principal.
-    /// </summary>
-    /// <param name="propertyName">Numele proprietatii din model pentru legare (DataBinding).</param>
-    /// <param name="header">Titlul coloanei afisat utilizatorului.</param>
-    /// <param name="width">Latimea coloanei.</param>
-    private void AddGridColumn(string propertyName, string header, int width)
-    {
-        var column = new DataGridViewTextBoxColumn
-        {
-            DataPropertyName = propertyName,
-            HeaderText = header,
-            MinimumWidth = Math.Min(width, 70),
-            Width = width,
-            SortMode = DataGridViewColumnSortMode.NotSortable
-        };
-
-        if (propertyName == "Notes")
-        {
-            column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            column.MinimumWidth = 220;
-        }
-        else
-        {
-            column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-        }
-
-        _grid.Columns.Add(column);
     }
 
     /// <summary>
@@ -1746,7 +1247,6 @@ public class MainForm : Form
         if (_headerPanel != null)
         {
             _headerPanel.BackColor = accent;
-
             foreach (Control child in GetAllControls(_headerPanel))
             {
                 child.BackColor = accent;
@@ -1760,7 +1260,7 @@ public class MainForm : Form
             _controlsCard.ForeColor = textPrimary;
         }
 
-        foreach (var group in _mainGroupBoxes)
+        foreach (var group in GetAllControls(this).OfType<GroupBox>())
         {
             group.BackColor = surface;
             group.ForeColor = textPrimary;
@@ -1773,13 +1273,13 @@ public class MainForm : Form
                 continue;
             }
 
-            if (panel.Parent == _controlsCard || panel.Parent is GroupBox)
-            {
-                panel.BackColor = surface;
-            }
-            else if (panel.Controls.Contains(_statsLabel))
+            if (panel == _footerCard)
             {
                 panel.BackColor = surfaceSoft;
+            }
+            else if (panel.Parent == _controlsCard || panel.Parent is GroupBox || IsDescendantOf(panel, _controlsCard))
+            {
+                panel.BackColor = surface;
             }
             else
             {
@@ -1793,7 +1293,7 @@ public class MainForm : Form
             {
                 table.BackColor = accent;
             }
-            else if (table.Parent == _controlsCard || table.Parent is GroupBox)
+            else if (table.Parent == _controlsCard || table.Parent is GroupBox || IsDescendantOf(table, _controlsCard))
             {
                 table.BackColor = surface;
             }
@@ -1807,7 +1307,7 @@ public class MainForm : Form
 
         foreach (var flow in GetAllControls(this).OfType<FlowLayoutPanel>())
         {
-            if (flow.Parent is GroupBox || flow.Parent == _controlsCard)
+            if (flow.Parent is GroupBox || IsDescendantOf(flow, _controlsCard))
             {
                 flow.BackColor = surface;
             }
@@ -1819,25 +1319,14 @@ public class MainForm : Form
             flow.ForeColor = textPrimary;
         }
 
-        foreach (var button in _mainButtons)
+        foreach (var button in GetAllControls(this).OfType<Button>())
         {
-            var useSecondaryStyle =
-                button.Text == "Tema" ||
-                button.Text == "Help" ||
-                button.Text == "Reset";
-
             var isDelete = button.Text == "Sterge";
 
-            if (useSecondaryStyle)
-            {
-                button.BackColor = surfaceSoft;
-                button.ForeColor = textPrimary;
-                button.FlatAppearance.BorderSize = 1;
-                button.FlatAppearance.BorderColor = border;
-                button.FlatAppearance.MouseOverBackColor = accentHover;
-                button.FlatAppearance.MouseDownBackColor = accent;
-            }
-            else if (isDelete)
+            button.FlatStyle = FlatStyle.Flat;
+            button.Cursor = Cursors.Hand;
+
+            if (isDelete)
             {
                 button.BackColor = _currentTheme switch
                 {
@@ -1861,19 +1350,19 @@ public class MainForm : Form
             }
         }
 
-        foreach (var label in _mainLabels)
+        foreach (var label in GetAllControls(this).OfType<Label>())
         {
             if (_headerPanel != null && (label.Parent == _headerPanel || IsDescendantOf(label, _headerPanel)))
             {
                 label.BackColor = accent;
                 label.ForeColor = Color.White;
             }
-            else if (label == _statsLabel || (label.Parent != null && label.Parent.Controls.Contains(_statsLabel)))
+            else if (label == _statsLabel || label.Parent == _footerCard || IsDescendantOf(label, _footerCard))
             {
                 label.BackColor = surfaceSoft;
                 label.ForeColor = textSecondary;
             }
-            else if (label.Parent is GroupBox || label.Parent == _controlsCard)
+            else if (label.Parent is GroupBox || IsDescendantOf(label, _controlsCard))
             {
                 label.BackColor = surface;
                 label.ForeColor = textPrimary;
@@ -1940,9 +1429,9 @@ public class MainForm : Form
 
         _grid.EnableHeadersVisualStyles = false;
 
-        if (_statsLabel.Parent != null)
+        if (_footerCard != null)
         {
-            _statsLabel.Parent.BackColor = surfaceSoft;
+            _footerCard.BackColor = surfaceSoft;
         }
     }
 
@@ -2013,6 +1502,7 @@ public class MainForm : Form
             }
         }
     }
+
 
     /// <summary>
     /// Creeaza o lista initiala de seriale pentru exemplificare.
@@ -2099,4 +1589,9 @@ public class MainForm : Form
             Notes = "Recomandabil pentru prezentare."
         }
     };
+
+    private void _filtersLayout_Paint(object sender, PaintEventArgs e)
+    {
+
+    }
 }
