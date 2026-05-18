@@ -1,4 +1,4 @@
-/**************************************************************************
+﻿/**************************************************************************
  *                                                                        *
  *  File:        MainForm.cs                                              *
  *  Copyright:   (c) 2026, Echipa ToonTracker                             *
@@ -54,6 +54,7 @@ public partial class MainForm : Form
     {
         _showService = showService;
         InitializeComponent();
+        ConfigureGridColumns();
         ApplyTheme();
         ApplyRoundedCornersToStaticControls();
         SeedDemoDataIfEmpty();
@@ -205,10 +206,95 @@ public partial class MainForm : Form
         {
             MessageBox.Show(
                 ex.Message,
-                "Eroare la incarcarea datelor demo",
+                "Eroare la încărcarea datelor demo",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
+    }
+    /// <summary>
+    /// Configureaza coloanele tabelului principal in care sunt afisate titlurile din colectie.
+    /// </summary>
+    private void ConfigureGridColumns()
+    {
+        _grid.Columns.Clear();
+        _grid.AutoGenerateColumns = false;
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "Title",
+            HeaderText = "Titlu",
+            Width = 180
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "Studio",
+            HeaderText = "Studio",
+            Width = 130
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "Genre",
+            HeaderText = "Gen",
+            Width = 120
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "TotalEpisodes",
+            HeaderText = "Episoade",
+            Width = 90
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "WatchedEpisodes",
+            HeaderText = "Vizionate",
+            Width = 80
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "Progress",
+            HeaderText = "Progres %",
+            Width = 90
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "Rating",
+            HeaderText = "Rating",
+            Width = 90
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "Status",
+            HeaderText = "Status",
+            Width = 100
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "PersonalScore",
+            HeaderText = "Scor",
+            Width = 70
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "FavoriteCharacter",
+            HeaderText = "Personaj favorit",
+            Width = 150
+        });
+
+        _grid.Columns.Add(new DataGridViewTextBoxColumn
+        {
+            DataPropertyName = "Notes",
+            HeaderText = "Note",
+            AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+        });
     }
 
     /// <summary>
@@ -348,7 +434,7 @@ public partial class MainForm : Form
 
         return selectedSort switch
         {
-            "Numar episoade" => shows
+            "Număr episoade" => shows
                 .OrderByDescending(s => s.TotalEpisodes)
                 .ThenBy(s => s.Title)
                 .ToList(),
@@ -376,10 +462,10 @@ public partial class MainForm : Form
     private void UpdateStats(List<AnimatedShow> shows)
     {
         _statsLabel.Text =
-            $"Titluri afisate: {shows.Count} | " +
+            $"Titluri afișate: {shows.Count} | " +
             $"Finalizate: {_statistics.CountFinished(shows)} | " +
             $"Scor mediu: {_statistics.AverageScore(shows)} | " +
-            $"Episoade ramase: {_statistics.RemainingEpisodes(shows)} | " +
+            $"Episoade rămase: {_statistics.RemainingEpisodes(shows)} | " +
             $"Gen preferat: {_statistics.FavoriteGenre(shows)}";
     }
 
@@ -443,8 +529,8 @@ public partial class MainForm : Form
         if (selected == null)
         {
             MessageBox.Show(
-                "Selecteaza mai intai un titlu din tabel.",
-                "Atentie",
+                "Selectează mai întâi un titlu din tabel.",
+                "Atenție",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return;
@@ -486,15 +572,15 @@ public partial class MainForm : Form
         if (selected == null)
         {
             MessageBox.Show(
-                "Selecteaza mai intai un titlu din tabel.",
-                "Atentie",
+                "Selectează mai întâi un titlu din tabel.",
+                "Atenție",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return;
         }
 
         var confirmation = MessageBox.Show(
-            $"Sigur stergi '{selected.Title}'?",
+            $"Sigur ștergi '{selected.Title}'?",
             "Confirmare",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Question);
@@ -532,8 +618,8 @@ public partial class MainForm : Form
         if (selected == null)
         {
             MessageBox.Show(
-                "Selecteaza mai intai un titlu din tabel.",
-                "Atentie",
+                "Selectează mai întâi un titlu din tabel.",
+                "Atenție",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return;
@@ -574,8 +660,8 @@ public partial class MainForm : Form
             if (finishedShows.Count == 0)
             {
                 _recommendationsBox.Text =
-                    "Nu exista titluri finalizate. Recomandarile automate se bazeaza strict pe ce ai terminat.\r\n\r\n" +
-                    "Poti folosi butonul Recomandari custom pentru a alege manual ce ai chef sa vezi.";
+                    "Nu există titluri finalizate. Recomandările automate se bazează strict pe ce ai terminat.\r\n\r\n" +
+                    "Poți folosi butonul Recomandări custom pentru a alege manual ce ai chef să vezi.";
                 ClearRecommendationPicker();
                 return;
             }
@@ -601,11 +687,11 @@ public partial class MainForm : Form
 
             DisplayRecommendations(
                 recommendations,
-                "Recomandari generate automat doar pe baza titlurilor finalizate:");
+                "Recomandări generate automat doar pe baza titlurilor finalizate:");
         }
         catch (Exception ex)
         {
-            _recommendationsBox.Text = "Eroare la generarea recomandarilor: " + ex.Message;
+            _recommendationsBox.Text = "Eroare la generarea recomandărilor: " + ex.Message;
             ClearRecommendationPicker();
         }
     }
@@ -644,11 +730,11 @@ public partial class MainForm : Form
 
             DisplayRecommendations(
                 recommendations,
-                "Recomandari generate pe baza preferintelor alese manual:");
+                "Recomandări generate pe baza preferințelor alese manual:");
         }
         catch (Exception ex)
         {
-            _recommendationsBox.Text = "Eroare la generarea recomandarilor custom: " + ex.Message;
+            _recommendationsBox.Text = "Eroare la generarea recomandărilor custom: " + ex.Message;
             ClearRecommendationPicker();
         }
     }
@@ -666,7 +752,7 @@ public partial class MainForm : Form
         if (recommendations.Count == 0)
         {
             _recommendationsBox.Text =
-                "Nu exista recomandari noi. Toate titlurile potrivite sunt deja in lista ta.";
+                "Nu există recomandări noi. Toate titlurile potrivite sunt deja în lista ta.";
             ClearRecommendationPicker();
             return;
         }
@@ -683,7 +769,7 @@ public partial class MainForm : Form
             text += $"   Episoade: {show.TotalEpisodes}" + Environment.NewLine;
             text += $"   Rating: {show.Rating}" + Environment.NewLine;
             text += $"   Scor estimat de potrivire: {show.PersonalScore}/10" + Environment.NewLine;
-            text += $"   Motiv: {show.Notes.Replace("Recomandare automata: ", "")}" + Environment.NewLine;
+            text += $"   Motiv: {show.Notes.Replace("Recomandare automată: ", "")}" + Environment.NewLine;
             text += Environment.NewLine;
         }
 
@@ -738,7 +824,7 @@ public partial class MainForm : Form
         if (recommendation == null)
         {
             MessageBox.Show(
-                "Recomandarea selectata nu mai este disponibila.",
+                "Recomandarea selectată nu mai este disponibilă.",
                 "Wishlist",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -751,7 +837,7 @@ public partial class MainForm : Form
         if (alreadyExists)
         {
             MessageBox.Show(
-                "Titlul exista deja in lista ta.",
+                "Titlul există deja în lista ta.",
                 "Wishlist",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -772,7 +858,7 @@ public partial class MainForm : Form
                 Status = WatchStatus.Planned,
                 PersonalScore = 0,
                 FavoriteCharacter = string.Empty,
-                Notes = "Adaugat in wishlist din recomandarile inteligente."
+                Notes = "Adăugat în wishlist din recomandările inteligente."
             };
 
             _showService.Add(wishlistShow);
@@ -782,10 +868,10 @@ public partial class MainForm : Form
 
             DisplayRecommendations(
                 _lastRecommendations.ToList(),
-                "Recomandari ramase:");
+                "Recomandări rămase:");
 
             MessageBox.Show(
-                $"'{wishlistShow.Title}' a fost adaugat in wishlist cu status Planned.",
+                $"'{wishlistShow.Title}' a fost adăugat în wishlist cu status Planned.",
                 "Wishlist actualizat",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -793,7 +879,7 @@ public partial class MainForm : Form
         catch (Exception ex)
         {
             MessageBox.Show(
-                "Nu s-a putut adauga recomandarea in wishlist: " + ex.Message,
+                "Nu s-a putut adăuga recomandarea în wishlist: " + ex.Message,
                 "Eroare wishlist",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
@@ -820,7 +906,7 @@ public partial class MainForm : Form
         catch (Exception ex)
         {
             MessageBox.Show(
-                "Nu s-au putut afisa statisticile: " + ex.Message,
+                "Nu s-au putut afişa statisticile: " + ex.Message,
                 "Eroare statistici",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
@@ -844,7 +930,7 @@ public partial class MainForm : Form
             if (shows.Count == 0)
             {
                 MessageBox.Show(
-                    "Nu exista titluri de exportat. Adauga mai intai cateva desene sau seriale.",
+                    "Nu există titluri de exportat. Adaugă mai întâi câteva desene sau seriale.",
                     "Export raport",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -856,7 +942,7 @@ public partial class MainForm : Form
             using var saveDialog = new SaveFileDialog
             {
                 Title = "Export raport ToonTracker",
-                Filter = "Raport text (*.txt)|*.txt|Fisier CSV pentru Excel (*.csv)|*.csv",
+                Filter = "Raport text (*.txt)|*.txt|Fișier CSV pentru Excel (*.csv)|*.csv",
                 FileName = $"ToonTracker_Raport_{DateTime.Now:yyyyMMdd_HHmm}",
                 DefaultExt = "txt",
                 AddExtension = true
@@ -910,9 +996,9 @@ public partial class MainForm : Form
         builder.AppendLine($"Total titluri: {shows.Count}");
         builder.AppendLine($"Titluri finalizate: {_statistics.CountFinished(shows)}");
         builder.AppendLine($"Scor mediu: {_statistics.AverageScore(shows)}");
-        builder.AppendLine($"Episoade ramase: {_statistics.RemainingEpisodes(shows)}");
+        builder.AppendLine($"Episoade rămase: {_statistics.RemainingEpisodes(shows)}");
         builder.AppendLine($"Gen preferat: {_statistics.FavoriteGenre(shows)}");
-        builder.AppendLine($"Episoade vazute total: {shows.Sum(s => s.WatchedEpisodes)}");
+        builder.AppendLine($"Episoade văzute total: {shows.Sum(s => s.WatchedEpisodes)}");
         builder.AppendLine();
 
         builder.AppendLine("LISTA TITLURI");
@@ -925,7 +1011,7 @@ public partial class MainForm : Form
             builder.AppendLine($"{index}. {show.Title}");
             builder.AppendLine($"   Studio: {show.Studio}");
             builder.AppendLine($"   Gen: {show.Genre}");
-            builder.AppendLine($"   Episoade vazute/total: {show.WatchedEpisodes}/{show.TotalEpisodes}");
+            builder.AppendLine($"   Episoade văzute/total: {show.WatchedEpisodes}/{show.TotalEpisodes}");
             builder.AppendLine($"   Progres: {show.Progress}%");
             builder.AppendLine($"   Rating: {show.Rating}");
             builder.AppendLine($"   Status: {show.Status}");
@@ -938,7 +1024,7 @@ public partial class MainForm : Form
         }
 
         builder.AppendLine("========================================");
-        builder.AppendLine("Raport generat automat de aplicatia ToonTracker.");
+        builder.AppendLine("Raport generat automat de aplicația ToonTracker.");
 
         return builder.ToString();
     }
@@ -952,7 +1038,7 @@ public partial class MainForm : Form
     {
         var builder = new StringBuilder();
 
-        builder.AppendLine("Titlu,Studio,Gen,Episoade totale,Episoade vazute,Progres,Rating,Status,Scor,Personaj favorit,Note");
+        builder.AppendLine("Titlu,Studio,Gen,Episoade totale,Episoade văzute,Progres,Rating,Status,Scor,Personaj favorit,Note");
 
         foreach (var show in shows)
         {
@@ -1016,7 +1102,7 @@ public partial class MainForm : Form
             LoadData();
 
             MessageBox.Show(
-                "Au fost incarcate exemplele pentru prezentare.",
+                "Au fost încărcate exemplele pentru prezentare.",
                 "Date demo",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -1063,7 +1149,7 @@ public partial class MainForm : Form
     {
         using var themeForm = new Form
         {
-            Text = "Alege vibe-ul aplicatiei",
+            Text = "Alege vibe-ul aplicației",
             Width = 340,
             Height = 220,
             StartPosition = FormStartPosition.CenterParent,
@@ -1136,14 +1222,14 @@ public partial class MainForm : Form
 
         var okButton = new Button
         {
-            Text = "Aplica",
+            Text = "Aplică",
             Width = 90,
             Height = 30
         };
 
         var cancelButton = new Button
         {
-            Text = "Renunta",
+            Text = "Renunță",
             Width = 90,
             Height = 30
         };
@@ -1321,7 +1407,7 @@ public partial class MainForm : Form
 
         foreach (var button in GetAllControls(this).OfType<Button>())
         {
-            var isDelete = button.Text == "Sterge";
+            var isDelete = button.Text == "Șterge";
 
             button.FlatStyle = FlatStyle.Flat;
             button.Cursor = Cursors.Hand;

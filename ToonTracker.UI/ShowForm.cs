@@ -2,258 +2,170 @@
  *                                                                        *
  *  File:        ShowForm.cs                                              *
  *  Copyright:   (c) 2026, Echipa ToonTracker                             *
- *  Description: Dialog pentru adaugarea si editarea unui                 *
- *  desen/serial animat.                                                  *
- *                                                                        *
- *  This program is free software; you can redistribute it and/or modify  *
- *  it under the terms of the GNU General Public License as published by  *
- *  the Free Software Foundation. This program is distributed in the      *
- *  hope that it will be useful, but WITHOUT ANY WARRANTY; without even   *
- *  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   *
- *  PURPOSE. See the GNU General Public License for more details.         *
+ *  Description: Logica formularului pentru adaugarea si editarea          *
+ *               unui desen/serial animat.                                *
  *                                                                        *
  **************************************************************************/
 
+using System.Drawing.Drawing2D;
 using ToonTracker.Domain;
 using ToonTracker.Services;
 
 namespace ToonTracker.UI;
 
 /// <summary>
-/// Clasa reprezentand formularul de dialog pentru crearea sau modificarea unui obiect de tip AnimatedShow.
+/// Formular de dialog pentru crearea sau modificarea unui obiect AnimatedShow.
 /// </summary>
-public class ShowForm : Form
+public partial class ShowForm : Form
 {
-    private readonly TextBox _title = new();
-    private readonly TextBox _studio = new();
-    private readonly TextBox _genre = new();
-    private readonly NumericUpDown _total = new() { Minimum = 1, Maximum = 2000, Value = 12 };
-    private readonly NumericUpDown _watched = new() { Minimum = 0, Maximum = 2000 };
-    private readonly ComboBox _rating = new() { DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _status = new() { DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly NumericUpDown _score = new() { Minimum = 0, Maximum = 10, Value = 0 };
-    private readonly TextBox _character = new();
-    private readonly TextBox _notes = new() { Multiline = true, Height = 80, ScrollBars = ScrollBars.Vertical };
-    private bool _isLoadingFields;
     private readonly List<AgeRating> _ratingValues = Enum.GetValues(typeof(AgeRating)).Cast<AgeRating>().ToList();
     private readonly List<WatchStatus> _statusValues = Enum.GetValues(typeof(WatchStatus)).Cast<WatchStatus>().ToList();
+    private bool _isLoadingFields;
 
     /// <summary>
-    /// Obiectul AnimatedShow care este creat sau editat in cadrul formularului.
+    /// Obiectul AnimatedShow creat sau editat in formular.
     /// </summary>
     public AnimatedShow Show { get; private set; }
 
     /// <summary>
-    /// Constructor pentru editarea unui serial existent.
+    /// Constructor pentru adaugarea unui serial nou sau editarea unuia existent.
     /// </summary>
-    /// <param name="show">Obiectul AnimatedShow care urmeaza sa fie editat.</param>
+    /// <param name="show">Serialul editat. Daca este null, se creeaza un serial nou.</param>
     public ShowForm(AnimatedShow? show = null)
     {
-        Show = show == null ? new AnimatedShow() : new AnimatedShow
-        {
-            Id = show.Id,
-            Title = show.Title,
-            Studio = show.Studio,
-            Genre = show.Genre,
-            TotalEpisodes = show.TotalEpisodes,
-            WatchedEpisodes = show.WatchedEpisodes,
-            Rating = show.Rating,
-            Status = show.Status,
-            PersonalScore = show.PersonalScore,
-            FavoriteCharacter = show.FavoriteCharacter,
-            Notes = show.Notes
-        };
+        Show = show == null
+            ? new AnimatedShow()
+            : new AnimatedShow
+            {
+                Id = show.Id,
+                Title = show.Title,
+                Studio = show.Studio,
+                Genre = show.Genre,
+                TotalEpisodes = show.TotalEpisodes,
+                WatchedEpisodes = show.WatchedEpisodes,
+                Rating = show.Rating,
+                Status = show.Status,
+                PersonalScore = show.PersonalScore,
+                FavoriteCharacter = show.FavoriteCharacter,
+                Notes = show.Notes
+            };
 
-        Text = show == null ? "Adauga desen/serial animat" : "Editeaza desen/serial animat";
-        Width = 520;
-        Height = 610;
-        MinimumSize = new Size(520, 610);
-        StartPosition = FormStartPosition.CenterParent;
-        FormBorderStyle = FormBorderStyle.FixedDialog;
-        MaximizeBox = false;
-        MinimizeBox = false;
+        InitializeComponent();
 
-        BuildUi();
+        Text = show == null ? "Adaugă desen/serial animat" : "Editează desen/serial animat";
+        _titleLabel.Text = show == null ? "Adaugă titlu" : "Editează titlu";
+        _subtitleLabel.Text = show == null
+            ? "Completează detaliile pentru un desen sau serial animat nou."
+            : "Actualizează detaliile titlului selectat din colecție.";
+
+        LoadStaticOptions();
         FillFields();
+        ApplyTheme();
+        ApplyRoundedCornersToStaticControls();
     }
 
-    /// <summary>
-    /// Construieste interfata grafica a formularului, adaugand controalele si setand layout-ul.
-    /// </summary>
-    private void BuildUi()
+    private void LoadStaticOptions()
     {
-        _rating.Items.Clear();
-        _rating.Items.AddRange(_ratingValues.Cast<object>().ToArray());
+        _ratingComboBox.Items.Clear();
+        _ratingComboBox.Items.AddRange(_ratingValues.Cast<object>().ToArray());
 
-        _status.Items.Clear();
-        _status.Items.AddRange(_statusValues.Cast<object>().ToArray());
+        _statusComboBox.Items.Clear();
+        _statusComboBox.Items.AddRange(_statusValues.Cast<object>().ToArray());
 
-        _rating.SelectedIndex = 0;
-        _status.SelectedIndex = 0;
-        _watched.ValueChanged += (_, _) => SyncStatusAndScore();
-        _total.ValueChanged += (_, _) => SyncStatusAndScore();
-        _status.SelectedIndexChanged += (_, _) => SyncStatusAndScore();
-
-        var root = new TableLayoutPanel
+        if (_ratingComboBox.Items.Count > 0)
         {
-            Dock = DockStyle.Fill,
-            ColumnCount = 1,
-            RowCount = 2,
-            Padding = new Padding(12)
-        };
-        root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        Controls.Add(root);
+            _ratingComboBox.SelectedIndex = 0;
+        }
 
-        var table = new TableLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            ColumnCount = 2,
-            AutoSize = false
-        };
-        table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
-        table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-
-        // Adaugare campuri
-        AddRow(table, "Titlu *", _title);
-        AddRow(table, "Studio", _studio);
-        AddRow(table, "Gen *", _genre);
-        AddRow(table, "Episoade totale", _total);
-        AddRow(table, "Episoade vazute", _watched);
-        AddRow(table, "Rating varsta", _rating);
-        AddRow(table, "Status", _status);
-        AddRow(table, "Scor personal", _score);
-        AddRow(table, "Personaj favorit", _character);
-        AddRow(table, "Note", _notes);
-        root.Controls.Add(table, 0, 0);
-
-        var buttons = new FlowLayoutPanel
-        {
-            Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.RightToLeft,
-            AutoSize = true
-        };
-        var save = new Button { Text = "Salveaza", Width = 110, Height = 32 };
-        var cancel = new Button { Text = "Renunta", Width = 110, Height = 32, DialogResult = DialogResult.Cancel };
-        save.Click += Save_Click;
-        buttons.Controls.Add(save);
-        buttons.Controls.Add(cancel);
-        root.Controls.Add(buttons, 0, 1);
-
-        AcceptButton = save;
-        CancelButton = cancel;
+        var plannedIndex = _statusValues.IndexOf(WatchStatus.Planned);
+        _statusComboBox.SelectedIndex = plannedIndex >= 0 ? plannedIndex : 0;
     }
 
-    /// <summary>
-    /// Metoda utilitara pentru a adauga o eticheta si un control pe un rand din TableLayoutPanel.
-    /// </summary>
-    /// <param name="table">Panoul in care se adauga elementele.</param>
-    /// <param name="label">Textul etichetei.</param>
-    /// <param name="input">Controlul care trebuie adaugat.</param>
-    private static void AddRow(TableLayoutPanel table, string label, Control input)
-    {
-        var row = table.RowCount++;
-        table.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        table.Controls.Add(new Label
-        {
-            Text = label,
-            AutoSize = true,
-            Padding = new Padding(3, 7, 3, 7),
-            Dock = DockStyle.Fill
-        }, 0, row);
-        input.Dock = DockStyle.Fill;
-        input.Margin = new Padding(3, 4, 3, 4);
-        table.Controls.Add(input, 1, row);
-    }
-
-    /// <summary>
-    /// Populeaza campurile formularului cu datele din obiectul Show (folosit la editare).
-    /// </summary>
     private void FillFields()
     {
         _isLoadingFields = true;
 
-        _title.Text = Show.Title;
-        _studio.Text = Show.Studio;
-        _genre.Text = Show.Genre;
+        _titleTextBox.Text = Show.Title;
+        _studioTextBox.Text = Show.Studio;
+        _genreTextBox.Text = Show.Genre;
 
-        _total.Value = Show.TotalEpisodes <= 0 ? 12 : Show.TotalEpisodes;
-        _watched.Value = Math.Min(Math.Max(Show.WatchedEpisodes, _watched.Minimum), _watched.Maximum);
+        _totalNumeric.Value = Show.TotalEpisodes <= 0
+            ? 12
+            : Math.Min(Math.Max(Show.TotalEpisodes, _totalNumeric.Minimum), _totalNumeric.Maximum);
+
+        _watchedNumeric.Value = Math.Min(Math.Max(Show.WatchedEpisodes, _watchedNumeric.Minimum), _watchedNumeric.Maximum);
 
         var ratingIndex = _ratingValues.IndexOf(Show.Rating);
-        if (ratingIndex < 0)
-        {
-            ratingIndex = 0;
-        }
+        _ratingComboBox.SelectedIndex = ratingIndex >= 0 ? ratingIndex : 0;
 
-        if (_rating.Items.Count > ratingIndex)
-        {
-            _rating.SelectedIndex = ratingIndex;
-        }
-
-        var plannedIndex = _statusValues.IndexOf(WatchStatus.Planned);
         var statusIndex = _statusValues.IndexOf(Show.Status);
-
         if (statusIndex < 0)
         {
-            statusIndex = plannedIndex >= 0 ? plannedIndex : 0;
+            statusIndex = _statusValues.IndexOf(WatchStatus.Planned);
         }
+        _statusComboBox.SelectedIndex = statusIndex >= 0 ? statusIndex : 0;
 
-        if (_status.Items.Count > statusIndex)
-        {
-            _status.SelectedIndex = statusIndex;
-        }
-
-        _score.Value = Math.Min(Math.Max(Show.PersonalScore, _score.Minimum), _score.Maximum);
-
-        _character.Text = Show.FavoriteCharacter;
-        _notes.Text = Show.Notes;
+        _scoreNumeric.Value = Math.Min(Math.Max(Show.PersonalScore, _scoreNumeric.Minimum), _scoreNumeric.Maximum);
+        _favoriteCharacterTextBox.Text = Show.FavoriteCharacter;
+        _notesTextBox.Text = Show.Notes;
 
         _isLoadingFields = false;
         SyncStatusAndScore();
     }
 
-    /// <summary>
-    /// Sincronizeaza starea (statusul) serialului si scorul in functie de progresul vizionarii.
-    /// </summary>
+    private void WatchedNumeric_ValueChanged(object? sender, EventArgs e)
+    {
+        SyncStatusAndScore();
+    }
+
+    private void TotalNumeric_ValueChanged(object? sender, EventArgs e)
+    {
+        if (_watchedNumeric.Value > _totalNumeric.Value)
+        {
+            _watchedNumeric.Value = _totalNumeric.Value;
+        }
+
+        SyncStatusAndScore();
+    }
+
+    private void StatusComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+    {
+        SyncStatusAndScore();
+    }
+
     private void SyncStatusAndScore()
     {
-        if (_isLoadingFields)
+        if (_isLoadingFields || _statusComboBox.SelectedIndex < 0)
         {
             return;
         }
 
-        if (_status.SelectedIndex < 0 || _status.SelectedIndex >= _statusValues.Count)
-        {
-            return;
-        }
-
-        var watched = (int)_watched.Value;
-        var total = (int)_total.Value;
-        var selectedStatus = _statusValues[_status.SelectedIndex];
+        var watched = (int)_watchedNumeric.Value;
+        var total = (int)_totalNumeric.Value;
+        var selectedStatus = _statusValues[_statusComboBox.SelectedIndex];
 
         if (watched == 0)
         {
-            _score.Value = 0;
-            _score.Enabled = false;
+            _scoreNumeric.Value = 0;
+            _scoreNumeric.Enabled = false;
 
             var plannedIndex = _statusValues.IndexOf(WatchStatus.Planned);
-            if (plannedIndex >= 0 && _status.SelectedIndex != plannedIndex)
+            if (plannedIndex >= 0 && _statusComboBox.SelectedIndex != plannedIndex)
             {
-                _status.SelectedIndex = plannedIndex;
+                _statusComboBox.SelectedIndex = plannedIndex;
             }
 
             return;
         }
 
-        _score.Enabled = true;
+        _scoreNumeric.Enabled = true;
 
         if (watched == total)
         {
             var finishedIndex = _statusValues.IndexOf(WatchStatus.Finished);
-            if (finishedIndex >= 0 && _status.SelectedIndex != finishedIndex)
+            if (finishedIndex >= 0 && _statusComboBox.SelectedIndex != finishedIndex)
             {
-                _status.SelectedIndex = finishedIndex;
+                _statusComboBox.SelectedIndex = finishedIndex;
             }
 
             return;
@@ -264,35 +176,40 @@ public class ShowForm : Form
             var watchingIndex = _statusValues.IndexOf(WatchStatus.Watching);
             if (watchingIndex >= 0)
             {
-                _status.SelectedIndex = watchingIndex;
+                _statusComboBox.SelectedIndex = watchingIndex;
             }
         }
     }
 
-    /// <summary>
-    /// Salveaza datele in obiect si valideaza.
-    /// </summary>
-    /// <param name="sender">Sursa.</param>
-    /// <param name="e">Argumente.</param>
-    private void Save_Click(object? sender, EventArgs e)
+    private void SaveButton_Click(object? sender, EventArgs e)
+    {
+        SaveShow();
+    }
+
+    private void CancelButton_Click(object? sender, EventArgs e)
+    {
+        DialogResult = DialogResult.Cancel;
+    }
+
+    private void SaveShow()
     {
         try
         {
-            if (_watched.Value > _total.Value)
+            if (_watchedNumeric.Value > _totalNumeric.Value)
             {
                 MessageBox.Show(
-                    "Episoadele vazute nu pot fi mai multe decat episoadele totale.",
+                    "Episoadele văzute nu pot fi mai multe decât episoadele totale.",
                     "Eroare validare",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
             }
 
-            var totalEpisodes = (int)_total.Value;
-            var watchedEpisodes = (int)_watched.Value;
-            var selectedStatus = _status.SelectedIndex >= 0 && _status.SelectedIndex < _statusValues.Count
-            ? _statusValues[_status.SelectedIndex]
-            : WatchStatus.Planned;
+            var totalEpisodes = (int)_totalNumeric.Value;
+            var watchedEpisodes = (int)_watchedNumeric.Value;
+            var selectedStatus = _statusComboBox.SelectedIndex >= 0 && _statusComboBox.SelectedIndex < _statusValues.Count
+                ? _statusValues[_statusComboBox.SelectedIndex]
+                : WatchStatus.Planned;
 
             if (watchedEpisodes == 0)
             {
@@ -307,18 +224,18 @@ public class ShowForm : Form
                 selectedStatus = WatchStatus.Watching;
             }
 
-            Show.Title = _title.Text.Trim();
-            Show.Studio = _studio.Text.Trim();
-            Show.Genre = _genre.Text.Trim();
+            Show.Title = _titleTextBox.Text.Trim();
+            Show.Studio = _studioTextBox.Text.Trim();
+            Show.Genre = _genreTextBox.Text.Trim();
             Show.TotalEpisodes = totalEpisodes;
             Show.WatchedEpisodes = watchedEpisodes;
-            Show.Rating = _rating.SelectedIndex >= 0 && _rating.SelectedIndex < _ratingValues.Count
-            ? _ratingValues[_rating.SelectedIndex]
-            : _ratingValues[0];
+            Show.Rating = _ratingComboBox.SelectedIndex >= 0 && _ratingComboBox.SelectedIndex < _ratingValues.Count
+                ? _ratingValues[_ratingComboBox.SelectedIndex]
+                : _ratingValues[0];
             Show.Status = selectedStatus;
-            Show.PersonalScore = watchedEpisodes == 0 ? 0 : (int)_score.Value;
-            Show.FavoriteCharacter = _character.Text.Trim();
-            Show.Notes = _notes.Text.Trim();
+            Show.PersonalScore = watchedEpisodes == 0 ? 0 : (int)_scoreNumeric.Value;
+            Show.FavoriteCharacter = _favoriteCharacterTextBox.Text.Trim();
+            Show.Notes = _notesTextBox.Text.Trim();
 
             ShowValidator.Validate(Show);
 
@@ -332,6 +249,134 @@ public class ShowForm : Form
                 "Eroare validare",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
+        }
+    }
+
+    private void RoundedControl_Resize(object? sender, EventArgs e)
+    {
+        if (sender is Button button)
+        {
+            ApplyRoundedCorners(button, 13);
+            return;
+        }
+
+        if (ReferenceEquals(sender, _headerPanel))
+        {
+            ApplyRoundedCorners(_headerPanel, 22);
+        }
+        else if (ReferenceEquals(sender, _formCard))
+        {
+            ApplyRoundedCorners(_formCard, 18);
+        }
+    }
+
+    private void ApplyRoundedCornersToStaticControls()
+    {
+        ApplyRoundedCorners(_headerPanel, 22);
+        ApplyRoundedCorners(_formCard, 18);
+        ApplyRoundedCorners(_saveButton, 13);
+        ApplyRoundedCorners(_cancelButton, 13);
+    }
+
+    private void ApplyRoundedCorners(Control control, int radius)
+    {
+        if (control.Width <= 0 || control.Height <= 0)
+        {
+            return;
+        }
+
+        using var path = new GraphicsPath();
+        var diameter = radius * 2;
+
+        path.StartFigure();
+        path.AddArc(0, 0, diameter, diameter, 180, 90);
+        path.AddArc(control.Width - diameter, 0, diameter, diameter, 270, 90);
+        path.AddArc(control.Width - diameter, control.Height - diameter, diameter, diameter, 0, 90);
+        path.AddArc(0, control.Height - diameter, diameter, diameter, 90, 90);
+        path.CloseFigure();
+
+        control.Region = new Region(path);
+    }
+
+    private void ApplyTheme()
+    {
+        var background = Color.FromArgb(255, 245, 250);
+        var surface = Color.White;
+        var surfaceSoft = Color.FromArgb(255, 237, 245);
+        var inputBackground = Color.FromArgb(255, 250, 252);
+        var accent = Color.FromArgb(232, 122, 170);
+        var accentHover = Color.FromArgb(244, 150, 193);
+        var textPrimary = Color.FromArgb(87, 52, 68);
+        var textSecondary = Color.FromArgb(129, 93, 108);
+        var border = Color.FromArgb(242, 204, 222);
+
+        BackColor = background;
+        ForeColor = textPrimary;
+
+        _headerPanel.BackColor = accent;
+        _titleLabel.BackColor = accent;
+        _titleLabel.ForeColor = Color.White;
+        _subtitleLabel.BackColor = accent;
+        _subtitleLabel.ForeColor = Color.White;
+
+        _formCard.BackColor = surface;
+        _formLayout.BackColor = surface;
+        _buttonsPanel.BackColor = surface;
+        _mainFieldsLayout.BackColor = surface;
+        _progressFieldsLayout.BackColor = surface;
+
+        foreach (var label in GetAllControls(this).OfType<Label>())
+        {
+            if (label.Parent == _headerLayout || label == _titleLabel || label == _subtitleLabel)
+            {
+                label.BackColor = accent;
+                label.ForeColor = Color.White;
+            }
+            else
+            {
+                label.BackColor = surface;
+                label.ForeColor = label == _hintLabel ? textSecondary : textPrimary;
+            }
+        }
+
+        foreach (var input in GetAllControls(this).Where(c => c is TextBox || c is ComboBox || c is NumericUpDown))
+        {
+            input.BackColor = inputBackground;
+            input.ForeColor = textPrimary;
+        }
+
+        _notesTextBox.BackColor = inputBackground;
+        _notesTextBox.ForeColor = textPrimary;
+
+        foreach (var button in GetAllControls(this).OfType<Button>())
+        {
+            button.FlatStyle = FlatStyle.Flat;
+            button.Cursor = Cursors.Hand;
+            button.BackColor = accent;
+            button.ForeColor = Color.White;
+            button.FlatAppearance.BorderSize = 0;
+            button.FlatAppearance.MouseOverBackColor = accentHover;
+            button.FlatAppearance.MouseDownBackColor = accentHover;
+        }
+
+        _cancelButton.BackColor = surfaceSoft;
+        _cancelButton.ForeColor = textPrimary;
+        _cancelButton.FlatAppearance.BorderSize = 1;
+        _cancelButton.FlatAppearance.BorderColor = border;
+        _cancelButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 229, 241);
+        _cancelButton.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 221, 236);
+    }
+
+    private IEnumerable<Control> GetAllControls(Control parent)
+    {
+        foreach (Control control in parent.Controls)
+        {
+            yield return control;
+
+            foreach (var child in GetAllControls(control))
+            {
+                yield return child;
+            }
         }
     }
 }
