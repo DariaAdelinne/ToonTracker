@@ -14,6 +14,7 @@
  **************************************************************************/
 
 using System.Text.Json;
+using ToonTracker.Domain;
 
 namespace ToonTracker.Data;
 
@@ -40,7 +41,7 @@ public class JsonRepository<T> : IRepository<T>
     /// Daca fisierul nu exista, returneaza o lista goala.
     /// </summary>
     /// <returns>Lista read-only a tuturor obiectelor deserializate</returns>
-    /// <exception cref="InvalidOperationException">Daca fisierul este corupt sau nu poate fi citit de pe disc</exception>
+    /// <exception cref="DataAccessException">Daca fisierul este corupt sau nu poate fi citit de pe disc</exception>
     public IReadOnlyList<T> GetAll()
     {
         try
@@ -51,11 +52,11 @@ public class JsonRepository<T> : IRepository<T>
         }
         catch (JsonException ex)
         {
-            throw new InvalidOperationException("Fisierul de date este corupt sau are format invalid.", ex);
+            throw new DataAccessException("Fisierul de date este corupt sau are format invalid.", ex);
         }
         catch (IOException ex)
         {
-            throw new InvalidOperationException("Datele nu au putut fi citite de pe disc.", ex);
+            throw new DataAccessException("Datele nu au putut fi citite de pe disc.", ex);
         }
     }
 
@@ -64,7 +65,7 @@ public class JsonRepository<T> : IRepository<T>
     /// Serialializeaza si salveaza toate obiectele in fisierul JSON, suprascriind continutul anterior
     /// </summary>
     /// <param name="items">Colectia de obiecte de salvat</param>
-    /// <exception cref="InvalidOperationException">Daca fisierul nu poate fi scris pe disc</exception>
+    /// <exception cref="DataAccessException">Daca fisierul nu poate fi scris pe disc</exception>
     public void SaveAll(IEnumerable<T> items)
     {
         try
@@ -74,7 +75,7 @@ public class JsonRepository<T> : IRepository<T>
         }
         catch (IOException ex)
         {
-            throw new InvalidOperationException("Datele nu au putut fi salvate pe disc.", ex);
+            throw new DataAccessException("Datele nu au putut fi salvate pe disc.", ex);
         }
     }
 }

@@ -15,7 +15,6 @@
  **************************************************************************/
 
 
-using System.Text;
 using ToonTracker.Domain;
 
 namespace ToonTracker.Services;
@@ -32,14 +31,14 @@ public static class ShowValidator
     /// La final, normalizeaza datele obiectului daca validarea trece.
     /// </summary>
     /// <param name="show">Obiectul AnimatedShow care urmeaza sa fie validat</param>
-    /// <exception cref="ArgumentException">Daca show este null sau daca exista una sau mai multe erori de validare</exception>
+    /// <exception cref="ShowValidationException">Daca show este null sau daca exista una sau mai multe erori de validare</exception>
     public static void Validate(AnimatedShow show)
     {
         var errors = new List<string>();
 
         if (show == null)
         {
-            throw new ArgumentException("Obiectul desenului/serialului nu poate fi null.");
+            throw new ShowValidationException("Obiectul desenului/serialului nu poate fi null.");
         }
 
         if (string.IsNullOrWhiteSpace(show.Title))
@@ -154,17 +153,7 @@ public static class ShowValidator
 
         if (errors.Count > 0)
         {
-            var builder = new StringBuilder();
-
-            builder.AppendLine("Datele introduse nu sunt valide:");
-            builder.AppendLine();
-
-            foreach (var error in errors)
-            {
-                builder.AppendLine("- " + error);
-            }
-
-            throw new ArgumentException(builder.ToString());
+            throw new ShowValidationException(errors);
         }
 
         Normalize(show);

@@ -41,7 +41,7 @@ public class ShowService
     /// </summary>
     /// <param name="show">Serialul de adaugat</param>
     /// <returns>Serialul adaugat</returns>
-    /// <exception cref="InvalidOperationException">Daca exista deja un serial cu acelasi titlu</exception>
+    /// <exception cref="DuplicateShowException">Daca exista deja un serial cu acelasi titlu</exception>
     public AnimatedShow Add(AnimatedShow show)
     {
         ShowValidator.Validate(show);
@@ -53,7 +53,7 @@ public class ShowService
 
         if (alreadyExists)
         {
-            throw new InvalidOperationException("Exista deja un desen/serial cu acest titlu.");
+            throw new DuplicateShowException(show.Title);
         }
 
         shows.Add(show);
@@ -66,8 +66,8 @@ public class ShowService
     /// Actualizeaza datele unui serial existent, dupa validare si verificarea duplicatelor dupa titlu
     /// </summary>
     /// <param name="show">Serialul cu datele actualizate</param>
-    /// <exception cref="KeyNotFoundException">Daca serialul nu a fost gasit</exception>
-    /// <exception cref="InvalidOperationException">Daca exista deja un alt serial cu acelasi titlu</exception>
+    /// <exception cref="ShowNotFoundException">Daca serialul nu a fost gasit</exception>
+    /// <exception cref="DuplicateShowException">Daca exista deja un alt serial cu acelasi titlu</exception>
     public void Update(AnimatedShow show)
     {
         ShowValidator.Validate(show);
@@ -78,7 +78,7 @@ public class ShowService
 
         if (index < 0)
         {
-            throw new KeyNotFoundException("Serialul nu a fost gasit.");
+            throw new ShowNotFoundException(show.Id);
         }
 
         var duplicateTitle = shows.Any(s =>
@@ -87,7 +87,7 @@ public class ShowService
 
         if (duplicateTitle)
         {
-            throw new InvalidOperationException("Exista deja un alt desen/serial cu acest titlu.");
+            throw new DuplicateShowException(show.Title);
         }
 
         shows[index] = show;
@@ -98,7 +98,7 @@ public class ShowService
     /// Sterge un serial dupa ID
     /// </summary>
     /// <param name="id">ID-ul serialului de sters</param>
-    /// <exception cref="KeyNotFoundException">Daca serialul nu a fost gasit</exception>
+    /// <exception cref="ShowNotFoundException">Daca serialul nu a fost gasit</exception>
     public void Delete(Guid id)
     {
         var shows = _repository.GetAll().ToList();
@@ -107,7 +107,7 @@ public class ShowService
 
         if (removed == 0)
         {
-            throw new KeyNotFoundException("Serialul nu a fost gasit.");
+            throw new ShowNotFoundException(id);
         }
 
         _repository.SaveAll(shows);
@@ -133,20 +133,20 @@ public class ShowService
     /// </summary>
     /// <param name="id">ID-ul serialului</param>
     /// <param name="episodes">Numarul de episoade de marcat ca vizionate</param>
-    /// <exception cref="ArgumentException">Daca numarul de episoade este invalid</exception>
-    /// <exception cref="KeyNotFoundException">Daca serialul nu a fost gasit</exception>
-    /// <exception cref="InvalidOperationException">Daca serialul este deja complet vizionat</exception>
+    /// <exception cref="ShowValidationException">Daca numarul de episoade este invalid</exception>
+    /// <exception cref="ShowNotFoundException">Daca serialul nu a fost gasit</exception>
+    /// <exception cref="InvalidWatchOperationException">Daca serialul este deja complet vizionat</exception>
     public void MarkEpisodeWatched(Guid id, int episodes = 1)
     {
         if (episodes <= 0)
         {
-            throw new ArgumentException("Numarul de episoade adaugate trebuie sa fie mai mare decat 0.");
+            throw new ShowValidationException("Numarul de episoade adaugate trebuie sa fie mai mare decat 0.");
         }
 
         var shows = _repository.GetAll().ToList();
 
         var show = shows.FirstOrDefault(s => s.Id == id)
-            ?? throw new KeyNotFoundException("Serialul nu a fost gasit.");
+            ?? throw new ShowNotFoundException(id);
 
         if (show.Status == WatchStatus.Planned)
         {
@@ -155,7 +155,7 @@ public class ShowService
 
         if (show.WatchedEpisodes >= show.TotalEpisodes)
         {
-            throw new InvalidOperationException("Titlul este deja complet vizionat.");
+            throw new InvalidWatchOperationException("Titlul este deja complet vizionat.", show.Status);
         }
 
         show.WatchedEpisodes += episodes;

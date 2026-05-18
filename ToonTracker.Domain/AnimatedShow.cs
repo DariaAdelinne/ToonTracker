@@ -62,12 +62,17 @@ public class AnimatedShow
     /// <summary>
     /// Valideaza integritatea datelor pentru obiectul curent.
     /// </summary>
-    /// <exception cref="ArgumentException"> Aruncata cand datele sunt inconsistente sau invalide. </exception>
+    /// <exception cref="ShowValidationException"> Aruncata cand datele sunt inconsistente sau invalide. </exception>
     public void Validate()
     {
-        if (string.IsNullOrWhiteSpace(Title)) throw new ArgumentException("Titlul este obligatoriu.");
-        if (TotalEpisodes <= 0) throw new ArgumentException("Numarul total de episoade trebuie sa fie pozitiv.");
-        if (WatchedEpisodes < 0 || WatchedEpisodes > TotalEpisodes) throw new ArgumentException("Episoadele vizionate sunt invalide.");
-        if (PersonalScore < 0 || PersonalScore > 10) throw new ArgumentException("Scorul personal trebuie sa fie intre 0 si 10.");
+        var errors = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(Title)) errors.Add("Titlul este obligatoriu.");
+        if (TotalEpisodes <= 0) errors.Add("Numarul total de episoade trebuie sa fie pozitiv.");
+        if (WatchedEpisodes < 0 || WatchedEpisodes > TotalEpisodes) errors.Add("Episoadele vizionate sunt invalide.");
+        if (PersonalScore < 0 || PersonalScore > 10) errors.Add("Scorul personal trebuie sa fie intre 0 si 10.");
+
+        if (errors.Count > 0)
+            throw new ShowValidationException(errors);
     }
 }

@@ -25,20 +25,20 @@ public class ShowServiceTests
     };
 
     [TestMethod] public void Progress_IsCalculatedCorrectly() => Assert.AreEqual(25, ValidShow().Progress);
-    [TestMethod] public void Validate_RejectsEmptyTitle() { var s = ValidShow(); s.Title = ""; Assert.ThrowsException<ArgumentException>(() => s.Validate()); }
-    [TestMethod] public void Validate_RejectsZeroEpisodes() { var s = ValidShow(); s.TotalEpisodes = 0; Assert.ThrowsException<ArgumentException>(() => s.Validate()); }
-    [TestMethod] public void Validate_RejectsNegativeWatched() { var s = ValidShow(); s.WatchedEpisodes = -1; Assert.ThrowsException<ArgumentException>(() => s.Validate()); }
-    [TestMethod] public void Validate_RejectsWatchedGreaterThanTotal() { var s = ValidShow(); s.WatchedEpisodes = 50; Assert.ThrowsException<ArgumentException>(() => s.Validate()); }
-    [TestMethod] public void Validate_RejectsScoreAboveTen() { var s = ValidShow(); s.PersonalScore = 11; Assert.ThrowsException<ArgumentException>(() => s.Validate()); }
+    [TestMethod] public void Validate_RejectsEmptyTitle() { var s = ValidShow(); s.Title = ""; Assert.ThrowsException<ShowValidationException>(() => s.Validate()); }
+    [TestMethod] public void Validate_RejectsZeroEpisodes() { var s = ValidShow(); s.TotalEpisodes = 0; Assert.ThrowsException<ShowValidationException>(() => s.Validate()); }
+    [TestMethod] public void Validate_RejectsNegativeWatched() { var s = ValidShow(); s.WatchedEpisodes = -1; Assert.ThrowsException<ShowValidationException>(() => s.Validate()); }
+    [TestMethod] public void Validate_RejectsWatchedGreaterThanTotal() { var s = ValidShow(); s.WatchedEpisodes = 50; Assert.ThrowsException<ShowValidationException>(() => s.Validate()); }
+    [TestMethod] public void Validate_RejectsScoreAboveTen() { var s = ValidShow(); s.PersonalScore = 11; Assert.ThrowsException<ShowValidationException>(() => s.Validate()); }
     [TestMethod] public void Add_SavesValidShow() { var repo = new MemoryRepository<AnimatedShow>(); var svc = new ShowService(repo); svc.Add(ValidShow()); Assert.AreEqual(1, repo.Items.Count); }
-    [TestMethod] public void Add_RejectsDuplicateTitle() { var repo = new MemoryRepository<AnimatedShow>(); var svc = new ShowService(repo); svc.Add(ValidShow()); Assert.ThrowsException<InvalidOperationException>(() => svc.Add(ValidShow())); }
+    [TestMethod] public void Add_RejectsDuplicateTitle() { var repo = new MemoryRepository<AnimatedShow>(); var svc = new ShowService(repo); svc.Add(ValidShow()); Assert.ThrowsException<DuplicateShowException>(() => svc.Add(ValidShow())); }
     [TestMethod] public void Search_FindsByTitle() { var repo = new MemoryRepository<AnimatedShow> { Items = new() { ValidShow() } }; var svc = new ShowService(repo); Assert.AreEqual(1, svc.Search("Gravity").Count()); }
     [TestMethod] public void Search_FindsByGenre() { var repo = new MemoryRepository<AnimatedShow> { Items = new() { ValidShow() } }; var svc = new ShowService(repo); Assert.AreEqual(1, svc.Search("Adventure").Count()); }
     [TestMethod] public void Search_FindsByStudio() { var repo = new MemoryRepository<AnimatedShow> { Items = new() { ValidShow() } }; var svc = new ShowService(repo); Assert.AreEqual(1, svc.Search("Disney").Count()); }
     [TestMethod] public void Update_ChangesExistingShow() { var s = ValidShow(); var repo = new MemoryRepository<AnimatedShow> { Items = new() { s } }; var svc = new ShowService(repo); s.PersonalScore = 10; svc.Update(s); Assert.AreEqual(10, repo.Items[0].PersonalScore); }
-    [TestMethod] public void Update_ThrowsForMissingShow() { var svc = new ShowService(new MemoryRepository<AnimatedShow>()); Assert.ThrowsException<KeyNotFoundException>(() => svc.Update(ValidShow())); }
+    [TestMethod] public void Update_ThrowsForMissingShow() { var svc = new ShowService(new MemoryRepository<AnimatedShow>()); Assert.ThrowsException<ShowNotFoundException>(() => svc.Update(ValidShow())); }
     [TestMethod] public void Delete_RemovesShow() { var s = ValidShow(); var repo = new MemoryRepository<AnimatedShow> { Items = new() { s } }; var svc = new ShowService(repo); svc.Delete(s.Id); Assert.AreEqual(0, repo.Items.Count); }
-    [TestMethod] public void Delete_ThrowsForMissingShow() { var svc = new ShowService(new MemoryRepository<AnimatedShow>()); Assert.ThrowsException<KeyNotFoundException>(() => svc.Delete(Guid.NewGuid())); }
+    [TestMethod] public void Delete_ThrowsForMissingShow() { var svc = new ShowService(new MemoryRepository<AnimatedShow>()); Assert.ThrowsException<ShowNotFoundException>(() => svc.Delete(Guid.NewGuid())); }
     [TestMethod] public void MarkEpisodeWatched_IncrementsProgress() { var s = ValidShow(); var repo = new MemoryRepository<AnimatedShow> { Items = new() { s } }; var svc = new ShowService(repo); svc.MarkEpisodeWatched(s.Id); Assert.AreEqual(11, repo.Items[0].WatchedEpisodes); }
     [TestMethod] public void MarkEpisodeWatched_FinishesAtTotal() { var s = ValidShow(); s.WatchedEpisodes = 39; var repo = new MemoryRepository<AnimatedShow> { Items = new() { s } }; var svc = new ShowService(repo); svc.MarkEpisodeWatched(s.Id); Assert.AreEqual(WatchStatus.Finished, repo.Items[0].Status); }
     [TestMethod] public void Statistics_CountFinishedWorks() { var stats = new StatisticsService(); Assert.AreEqual(1, stats.CountFinished(new[] { ValidShow(), new AnimatedShow { Title = "X", TotalEpisodes = 1, Status = WatchStatus.Finished } })); }
